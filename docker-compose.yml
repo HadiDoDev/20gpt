@@ -6,7 +6,7 @@ services:
     image: mongo:latest
     restart: always
     ports:
-      - 127.0.0.1:${MONGODB_PORT:-27018}:${MONGODB_PORT:-27018}
+      - 127.0.0.1:${MONGODB_PORT:-27018}:${MONGODB_PORT:-27017}
     volumes:
       - ${MONGODB_PATH:-./mongodb}:/data/db
     # TODO: add auth
