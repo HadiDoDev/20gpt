@@ -15,6 +15,7 @@ from langchain.schema.runnable import RunnableParallel, RunnablePassthrough
 
 class LANGCHAIN:
   def  __init__(self, model_name):
+    print('2-Corrunt Model:', model_name)
     self.llm = ChatOpenAI(api_key=openai_api_key, model=model_name, max_tokens=1024)
     self.qd_url = '"https://4b3ee481-41e3-470d-a80e-45ffb13d9c7d.us-east4-0.gcp.cloud.qdrant.io:6333"'
     self.qdrant_api_key = 'wlxgWdvrsyuYbOQHkV3CcmnH33XFQZPxWjRXKsTAvocWouKU_uZ2jw'
@@ -24,6 +25,7 @@ class LANGCHAIN:
                                                  write at most 100 words in your output "),
                                                    ("human","{question}" )])
     db = self.connect_to_vs('dini10', self.qd_url, self.qdrant_api_key, self.embeddings)
+    print("3-DB Type:", type(db))
     self.chain = ({'context':db.as_retriever(),"question": RunnablePassthrough()})|prompt|self.llm
 
   @staticmethod
@@ -44,6 +46,7 @@ class LANGCHAIN:
 
   def __call__(self, topic, message, chatmode=''):
     if topic=='dini10':
+      print("1-TOPIC:", topic, flush=True)
       response = self.chain.invoke({'question':message}).content
     else:
       response = None
