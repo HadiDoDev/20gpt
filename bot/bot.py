@@ -392,11 +392,8 @@ async def vision_message_handle(
 
     # new dialog timeout
     if use_new_dialog_timeout:
-        if (
-            datetime.now() - await db.get_user_attribute(user_id, "last_interaction")
-        ).seconds > config.new_dialog_timeout and len(
-            await db.get_dialog_messages(user_id)
-        ) > 0:
+        if (datetime.now() - db.get_user_attribute(user_id, "last_interaction")).seconds > config.new_dialog_timeout and \
+            len(await db.get_dialog_messages(user_id)) > 0:
             await db.start_new_dialog(user_id)
             await update.message.reply_text(
                 f"Starting new dialog due to timeout (<b>{config.chat_modes[chat_mode]['name']}</b> mode) ✅",
