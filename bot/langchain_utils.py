@@ -41,8 +41,9 @@ class LANGCHAIN:
     # self.chain = (RunnableParallel({'context':db.as_retriever(),"question": RunnablePassthrough()}))|prompt|self.llm
     prompt = ChatPromptTemplate.from_messages([("system", "you are a helpful assistant and you always extract and return reliable answer only from your {context}.\
     i will gave you Multiple-choice questions and just retun correct ONE, NOTHING MORE"), ("human","{question}" )])
-    self.chain = (
-      RunnableParallel({ "context": itemgetter("question") | db.as_retriever(), 'question': RunnablePassthrough()}) | prompt |self.llm)
+    self.chain = (RunnableParallel(
+      {"context": itemgetter("question") | db.as_retriever(),'question': RunnablePassthrough()}
+      ) | prompt |self.llm)
 
 
 
@@ -51,8 +52,7 @@ class LANGCHAIN:
   def __call__(self, topic, message, chatmode=''):
     if topic=='dini10':
       print(message)
-      response = self.chain.invoke({'question':message})
-      response = self.chain.invoke({'question':message})
+      response = self.chain.invoke({'question':message}).content
 
     else:
       response = None
