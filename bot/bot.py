@@ -380,7 +380,7 @@ async def vision_message_handle(
     db.set_user_attribute(user_id, "last_interaction", datetime.now())
 
     user_id = update.message.from_user.id
-    chat_mode = await db.get_user_attribute(user_id, "current_chat_mode")
+    chat_mode = db.get_user_attribute(user_id, "current_chat_mode")
     # current_model = db.get_user_attribute(user_id, "current_model")
 
     # if current_model != "gpt-4-vision-preview":
