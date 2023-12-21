@@ -13,7 +13,7 @@ from langchain.prompts import (
 )
 from langchain.schema.runnable import RunnableParallel, RunnablePassthrough
 from langchain.callbacks import get_openai_callback
-
+import config
 class LANGCHAIN:
   def  __init__(self, model_name):
     self.llm = ChatOpenAI(openai_api_key=openai_api_key, model=model_name, max_tokens=1024)
@@ -45,8 +45,16 @@ class LANGCHAIN:
     self.chain = (RunnableParallel(
       {"context": itemgetter("question") | db.as_retriever(),'question': RunnablePassthrough()}
       ) | prompt |self.llm)
+  @staticmethod
+  def _generate_prompt_messages(message, dialog_messages, chat_mode):
+    prompt = config.chat_modes[chat_mode]["prompt_start"]
+    messages = [("system", prompt)]
+    for dialog_message in dialog_messages:
+        messages.append(("human", dialog_message["user"]))
+        messages.append(("ai", dialog_message["bot"]))
+        # messages.append({"role": "user", "content": message})
 
-
+    return ChatPromptTemplate.from_messages(messages)
 
 
 
