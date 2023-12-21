@@ -22,9 +22,9 @@ class LANGCHAIN:
     prompt = ChatPromptTemplate.from_messages([("system", "you are a helpful assistant and\
                                                  you always extract and return reliable answer only from your {context}.\
                                                  write at most 100 words in your output "),
-                                                   ("human","{text}" )])
+                                                   ("human","{question}" )])
     db = self.connect_to_vs('dini10', self.qd_url, self.qdrant_api_key, self.embeddings)
-    self.chain = ({'context':db.as_retriever(),"text": RunnablePassthrough()})|prompt|self.llm
+    self.chain = ({'context':db.as_retriever(),"question": RunnablePassthrough()})|prompt|self.llm
 
   @staticmethod
   def connect_to_vs(collection_name, url, qdrant_api_key, embeddings):
