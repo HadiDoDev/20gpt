@@ -380,29 +380,25 @@ async def vision_message_handle(
     db.set_user_attribute(user_id, "last_interaction", datetime.now())
 
     user_id = update.message.from_user.id
-    chat_mode = await db.get_user_attribute(user_id, "current_chat_mode")
-    current_model = db.get_user_attribute(user_id, "current_model")
+    chat_mode = db.get_user_attribute(user_id, "current_chat_mode")
+    # current_model = db.get_user_attribute(user_id, "current_model")
 
-    if current_model != "gpt-4-vision-preview":
-        await update.message.reply_text(
-            "🥲 Images processing is only available for <b>gpt-4-vision-preview</b> model. Please change your settings in /settings",
-            parse_mode=ParseMode.HTML,
-        )
-        return
+    # if current_model != "gpt-4-vision-preview":
+    #     await update.message.reply_text(
+    #         "🥲 Images processing is only available for <b>gpt-4-vision-preview</b> model. Please change your settings in /settings",
+    #         parse_mode=ParseMode.HTML,
+    #     )
+    #     return
 
     # new dialog timeout
     if use_new_dialog_timeout:
-        if (
-            datetime.now() - await db.get_user_attribute(user_id, "last_interaction")
-        ).seconds > config.new_dialog_timeout and len(
-            await db.get_dialog_messages(user_id)
-        ) > 0:
+        if (datetime.now() - db.get_user_attribute(user_id, "last_interaction")).seconds > config.new_dialog_timeout and \
+            len(await db.get_dialog_messages(user_id)) > 0:
             await db.start_new_dialog(user_id)
             await update.message.reply_text(
                 f"Starting new dialog due to timeout (<b>{config.chat_modes[chat_mode]['name']}</b> mode) ✅",
                 parse_mode=ParseMode.HTML,
             )
-
     photo = update.message.effective_attachment[-1]
     photo_file = await context.bot.get_file(photo.file_id)
 
@@ -414,6 +410,7 @@ async def vision_message_handle(
 
     # in case of CancelledError
     n_input_tokens, n_output_tokens = 0, 0
+    print("In Vision HANDLE!!!!!", flush=True)
 
     try:
         # send placeholder message to user
@@ -842,6 +839,7 @@ def run_bot() -> None:
     application.add_handler(CommandHandler("cancel", cancel_handle, filters=user_filter))
 
     application.add_handler(MessageHandler(filters.VOICE & user_filter, voice_message_handle))
+    application.add_handler(MessageHandler(filters.PHOTO & user_filter, vision_message_handle))
 
     application.add_handler(CommandHandler("mode", show_chat_modes_handle, filters=user_filter))
     application.add_handler(CallbackQueryHandler(show_chat_modes_callback_handle, pattern="^show_chat_modes"))
