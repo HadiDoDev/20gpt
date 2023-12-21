@@ -381,14 +381,14 @@ async def vision_message_handle(
 
     user_id = update.message.from_user.id
     chat_mode = await db.get_user_attribute(user_id, "current_chat_mode")
-    current_model = db.get_user_attribute(user_id, "current_model")
+    # current_model = db.get_user_attribute(user_id, "current_model")
 
-    if current_model != "gpt-4-vision-preview":
-        await update.message.reply_text(
-            "🥲 Images processing is only available for <b>gpt-4-vision-preview</b> model. Please change your settings in /settings",
-            parse_mode=ParseMode.HTML,
-        )
-        return
+    # if current_model != "gpt-4-vision-preview":
+    #     await update.message.reply_text(
+    #         "🥲 Images processing is only available for <b>gpt-4-vision-preview</b> model. Please change your settings in /settings",
+    #         parse_mode=ParseMode.HTML,
+    #     )
+    #     return
 
     # new dialog timeout
     if use_new_dialog_timeout:
@@ -402,7 +402,7 @@ async def vision_message_handle(
                 f"Starting new dialog due to timeout (<b>{config.chat_modes[chat_mode]['name']}</b> mode) ✅",
                 parse_mode=ParseMode.HTML,
             )
-
+    print("In Vision HANDLE!!!!!", flush=True)
     photo = update.message.effective_attachment[-1]
     photo_file = await context.bot.get_file(photo.file_id)
 
