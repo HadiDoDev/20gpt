@@ -399,7 +399,6 @@ async def vision_message_handle(
                 f"Starting new dialog due to timeout (<b>{config.chat_modes[chat_mode]['name']}</b> mode) ✅",
                 parse_mode=ParseMode.HTML,
             )
-    print("In Vision HANDLE!!!!!", flush=True)
     photo = update.message.effective_attachment[-1]
     photo_file = await context.bot.get_file(photo.file_id)
 
@@ -411,6 +410,7 @@ async def vision_message_handle(
 
     # in case of CancelledError
     n_input_tokens, n_output_tokens = 0, 0
+    print("In Vision HANDLE!!!!!", flush=True)
 
     try:
         # send placeholder message to user
