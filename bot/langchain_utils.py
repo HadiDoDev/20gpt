@@ -25,6 +25,7 @@ class LANGCHAIN:
                                                  write at most 100 words in your output "),
                                                    ("human","{question}" )])
     db = self.connect_to_vs('dini10', self.qd_url, self.qdrant_api_key, self.embeddings)
+    self.db = db
     print("3-DB Type:", type(db))
     self.chain = ({'context':db.as_retriever(),"question": RunnablePassthrough()})|prompt|self.llm
 
@@ -47,6 +48,7 @@ class LANGCHAIN:
   def __call__(self, topic, message, chatmode=''):
     if topic=='dini10':
       print("1-TOPIC:", topic, flush=True)
+      print('4-SimilaritySearch:', self.db.similarity_search(message))
       response = self.chain.invoke({'question':message}).content
     else:
       response = None
