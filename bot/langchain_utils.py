@@ -12,6 +12,7 @@ from langchain.prompts import (
     HumanMessagePromptTemplate,
 )
 from langchain.schema.runnable import RunnableParallel, RunnablePassthrough
+from langchain.callbacks import get_openai_callback
 
 class LANGCHAIN:
   def  __init__(self, model_name):
@@ -52,8 +53,10 @@ class LANGCHAIN:
   def __call__(self, topic, message, chatmode=''):
     if topic=='dini10':
       print(message)
-      response = self.chain.invoke({'question':message}).content
+      with get_openai_callback() as cost:
+        response = self.chain.invoke({'question':message}).content
+        in_tokens, out_tokens = cost.prompt_tokens, cost.completion_tokens
 
     else:
-      response = None
-    return response
+      response, in_tokens, out_tokens = None, 0, 0
+    return response, in_tokens, out_tokens
