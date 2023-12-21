@@ -30,7 +30,7 @@ from telegram.constants import ParseMode, ChatAction
 import config
 import database
 import openai_utils
-import langchain
+import langchain_utils
 
 # setup
 db = database.Database()
@@ -232,7 +232,7 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
                 "html": ParseMode.HTML,
                 "markdown": ParseMode.MARKDOWN
             }[config.chat_modes[chat_mode]["parse_mode"]]
-            langchain_instance=langchain.LANGCHAIN(current_model)
+            langchain_instance=langchain_utils.LANGCHAIN(current_model)
             langchain_response = await langchain_instance('dini10', _message)
 
             chatgpt_instance = openai_utils.ChatGPT(model=current_model)
