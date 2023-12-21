@@ -55,15 +55,43 @@ class LANGCHAIN:
         # messages.append({"role": "user", "content": message})
 
     return ChatPromptTemplate.from_messages(messages)
+  
+  @staticmethod
+  def _create_chain(prompt, llm, db):
+    chain = (RunnableParallel(
+      {"context": itemgetter("question") | db.as_retriever(),'question': RunnablePassthrough()}
+      ) | prompt | llm)
+    return chain
+  @staticmethod
+  def connect_to_vs(collection_name):
+    url="https://4b3ee481-41e3-470d-a80e-45ffb13d9c7d.us-east4-0.gcp.cloud.qdrant.io:6333"
+    qdrant_api_key = 'wlxgWdvrsyuYbOQHkV3CcmnH33XFQZPxWjRXKsTAvocWouKU_uZ2jw'
+    embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
+    client = QdrantClient(
+        url,
+        api_key=qdrant_api_key, # For Qdrant Cloud, None for local instance
+    )
 
-
-
-  def __call__(self, topic, message, chatmode=''):
-    if topic=='dini10':
-      print(message)
+    db  = Qdrant(
+      client=client, collection_name=collection_name,
+      embeddings=embeddings,
+      distance_strategy= 'COSINE'
+    )
+    return db
+  def __call__(self, topic, message,dialog_messages, chatmode):
+    if chatmode in ['dini10']: 
+      db = self.connect_to_vs(chatmode)
+      prompt = self._generate_prompt_messages(message, dialog_messages, chatmode)
+      chain = self._create_chain(prompt, self.llm, db)
       with get_openai_callback() as cost:
-        response = self.chain.invoke({'question':message}).content
+        response = chain.invoke({'question':message}).content
         in_tokens, out_tokens = cost.prompt_tokens, cost.completion_tokens
+
+    # if topic=='dini10':
+    #   print(message)
+    #   with get_openai_callback() as cost:
+    #     response = self.chain.invoke({'question':message}).content
+    #     in_tokens, out_tokens = cost.prompt_tokens, cost.completion_tokens
 
     else:
       response, in_tokens, out_tokens = None, 0, 0
