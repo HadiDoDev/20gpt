@@ -1,5 +1,5 @@
 import config
-
+from io import BytesIO
 import tiktoken
 import openai
 
@@ -22,7 +22,7 @@ OPENAI_COMPLETION_OPTIONS = {
 
 class ChatGPT:
     def __init__(self, model="gpt-3.5-turbo"):
-        assert model in {"text-davinci-003", "gpt-3.5-turbo-16k", "gpt-3.5-turbo", "gpt-4", "gpt-4-1106-preview"}, f"Unknown model: {model}"
+        assert model in {"text-davinci-003", "gpt-3.5-turbo-16k", "gpt-3.5-turbo", "gpt-4", "gpt-4-1106-preview", "gpt-4-vision-preview"}, f"Unknown model: {model}"
         self.model = model
 
     async def send_message(self, message, dialog_messages=[], chat_mode="assistant"):
@@ -116,6 +116,107 @@ class ChatGPT:
                 dialog_messages = dialog_messages[1:]
 
         yield "finished", answer, (n_input_tokens, n_output_tokens), n_first_dialog_messages_removed  # sending final answer
+
+    async def send_vision_message(
+        self,
+        message,
+        dialog_messages=[],
+        chat_mode="assistant",
+        image_buffer: BytesIO = None,
+    ):
+        n_dialog_messages_before = len(dialog_messages)
+        answer = None
+        while answer is None:
+            try:
+                if self.model == "gpt-4-vision-preview":
+                    messages = self._generate_prompt_messages(
+                        message, dialog_messages, chat_mode, image_buffer
+                    )
+                    r = await self.aclient.chat.completions.create(
+                        model=self.model, messages=messages, **OPENAI_COMPLETION_OPTIONS
+                    )
+                    answer = r.choices[0].message.content
+                else:
+                    raise ValueError(f"Unsupported model: {self.model}")
+
+                answer = self._postprocess_answer(answer)
+                n_input_tokens, n_output_tokens = (
+                    r.usage.prompt_tokens,
+                    r.usage.completion_tokens,
+                )
+            except openai.BadRequestError as e:  # too many tokens
+                if len(dialog_messages) == 0:
+                    raise ValueError(
+                        "Dialog messages is reduced to zero, but still has too many tokens to make completion"
+                    ) from e
+
+                # forget first message in dialog_messages
+                dialog_messages = dialog_messages[1:]
+
+        n_first_dialog_messages_removed = n_dialog_messages_before - len(
+            dialog_messages
+        )
+
+        return (
+            answer,
+            (n_input_tokens, n_output_tokens),
+            n_first_dialog_messages_removed,
+        )
+
+    async def send_vision_message_stream(
+        self,
+        message,
+        dialog_messages=[],
+        chat_mode="assistant",
+        image_buffer: BytesIO = None,
+    ):
+        n_dialog_messages_before = len(dialog_messages)
+        answer = None
+        while answer is None:
+            try:
+                if self.model == "gpt-4-vision-preview":
+                    messages = self._generate_prompt_messages(
+                        message, dialog_messages, chat_mode, image_buffer
+                    )
+                    r_gen = await self.aclient.chat.completions.create(
+                        model=self.model,
+                        messages=messages,
+                        stream=True,
+                        **OPENAI_COMPLETION_OPTIONS,
+                    )
+
+                    answer = ""
+                    async for r_item in r_gen:
+                        delta = r_item.choices[0].delta
+                        if "content" in delta:
+                            answer += delta.content
+                            (
+                                n_input_tokens,
+                                n_output_tokens,
+                            ) = self._count_tokens_from_messages(
+                                messages, answer, model=self.model
+                            )
+                            n_first_dialog_messages_removed = (
+                                n_dialog_messages_before - len(dialog_messages)
+                            )
+                            yield "not_finished", answer, (
+                                n_input_tokens,
+                                n_output_tokens,
+                            ), n_first_dialog_messages_removed
+
+                answer = self._postprocess_answer(answer)
+
+            except openai.BadRequestError as e:  # too many tokens
+                if len(dialog_messages) == 0:
+                    raise e
+
+                # forget first message in dialog_messages
+                dialog_messages = dialog_messages[1:]
+
+        yield "finished", answer, (
+            n_input_tokens,
+            n_output_tokens,
+        ), n_first_dialog_messages_removed
 
     def _generate_prompt(self, message, dialog_messages, chat_mode):
         prompt = config.chat_modes[chat_mode]["prompt_start"]
