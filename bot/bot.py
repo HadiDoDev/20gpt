@@ -234,9 +234,9 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
             }[config.chat_modes[chat_mode]["parse_mode"]]
 
             print(type(_message), _message, flush=True)
-            langchain_instance=langchain_utils.LANGCHAIN(current_model)
-            langchain_response = langchain_instance('dini10', _message)
-            print(langchain_response, flush=True)
+            # langchain_instance=langchain_utils.LANGCHAIN(current_model)
+            # langchain_response = langchain_instance('dini10', _message)
+            # print(langchain_response, flush=True)
             
             chatgpt_instance = openai_utils.ChatGPT(model=current_model)
             if config.enable_message_streaming:
@@ -253,8 +253,8 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
 
                 gen = fake_gen()
 
-            # prev_answer = ""
-            prev_answer = langchain_response
+            prev_answer = ""
+            # prev_answer = langchain_response
 
             async for gen_item in gen:
                 status, answer, (n_input_tokens, n_output_tokens), n_first_dialog_messages_removed = gen_item
@@ -279,6 +279,7 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
 
             # update user data
             new_dialog_message = {"user": _message, "bot": answer, "date": datetime.now()}
+            print("NDM:", new_dialog_message)
             db.set_dialog_messages(
                 user_id,
                 db.get_dialog_messages(user_id, dialog_id=None) + [new_dialog_message],
