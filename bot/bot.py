@@ -236,9 +236,9 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
             }[config.chat_modes[chat_mode]["parse_mode"]]
 
             print(type(_message), _message, flush=True)
-            # langchain_instance=langchain_utils.LANGCHAIN(current_model)
-            # langchain_response = langchain_instance('dini10', _message)
-            # print(langchain_response, flush=True)
+            langchain_instance=langchain_utils.LANGCHAIN(current_model)
+            langchain_response = langchain_instance('dini10',  , message,dialog_messages, chat_mode)
+            print(langchain_response, flush=True)
             
             chatgpt_instance = openai_utils.ChatGPT(model=current_model)
             if config.enable_message_streaming:
