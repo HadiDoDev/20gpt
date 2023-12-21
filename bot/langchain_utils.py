@@ -15,7 +15,7 @@ from langchain.schema.runnable import RunnableParallel, RunnablePassthrough
 
 class LANGCHAIN:
   def  __init__(self, model_name):
-    self.llm = ChatOpenAI(api_key=openai_api_key, model=model_name, max_tokens=1024)
+    self.llm = ChatOpenAI(openai_api_key=openai_api_key, model=model_name, max_tokens=1024)
     # self.embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
     prompt = ChatPromptTemplate.from_messages([
       ("system", "you are a helpful assistant and you always extract and return reliable answer only from your {context}.\
@@ -24,7 +24,7 @@ class LANGCHAIN:
     def connect_to_vs(collection_name):
       url="https://4b3ee481-41e3-470d-a80e-45ffb13d9c7d.us-east4-0.gcp.cloud.qdrant.io:6333"
       qdrant_api_key = 'wlxgWdvrsyuYbOQHkV3CcmnH33XFQZPxWjRXKsTAvocWouKU_uZ2jw'
-      embeddings = OpenAIEmbeddings()
+      embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
       client = QdrantClient(
           url,
           api_key=qdrant_api_key, # For Qdrant Cloud, None for local instance
