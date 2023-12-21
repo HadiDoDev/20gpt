@@ -19,7 +19,7 @@ services:
       context: "."
       dockerfile: Dockerfile
     depends_on:
-      - mongo
+      - 20gpt_mongo
 
   20gpt_mongo_express:
     container_name: 20gpt_mongo_express
@@ -35,4 +35,4 @@ services:
       - ME_CONFIG_BASICAUTH_USERNAME=${MONGO_EXPRESS_USERNAME:-username}
       - ME_CONFIG_BASICAUTH_PASSWORD=${MONGO_EXPRESS_PASSWORD:-password}
     depends_on:
-      - mongo
+      - 20gpt_mongo
