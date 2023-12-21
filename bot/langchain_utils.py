@@ -23,7 +23,7 @@ class LANGCHAIN:
                                                  you always extract and return reliable answer only from your {context}.\
                                                  write at most 100 words in your output "),
                                                    ("human","{text}" )])
-    db = self.connect_to_vs('dini10', self.qd_url, self.qdrant_api_key)
+    db = self.connect_to_vs('dini10', self.qd_url, self.qdrant_api_key, self.embeddings)
     self.chain = ({'context':db.as_retriever(),"text": RunnablePassthrough()})|prompt|self.llm
 
   @staticmethod
