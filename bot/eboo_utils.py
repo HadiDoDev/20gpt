@@ -10,8 +10,7 @@ params = (
 )
 
 data = {
-    "token": "",
-    "command": "",
+    "token": "vlrP1qCYyiLXax4mbcSErct1AU6XsarX"
 }
 
 def addfile(filelink):
