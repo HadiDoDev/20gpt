@@ -421,7 +421,8 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
     image = NamedTemporaryFile(
         dir='media/',
         prefix=str(user_id)+'_',
-        suffix='.jpg'
+        suffix='.jpg',
+        delete=False
     )
     image.write(buf.read())
     image.close()
