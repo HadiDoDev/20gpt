@@ -446,13 +446,14 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
         # send typing action
         await update.message.chat.send_action(action="typing")
 
-        if message is None or len(message) == 0:
-            await update.message.reply_text(
-                "🥲 You sent <b>empty message</b>. Please, try again!",
-                parse_mode=ParseMode.HTML,
-            )
-            return
-
+        # if message is None or len(message) == 0:
+        #     await update.message.reply_text(
+        #         "🥲 You sent <b>empty message</b>. Please, try again!",
+        #         parse_mode=ParseMode.HTML,
+        #     )
+        #     return
+        if message:
+            transcribed_text = f"{message}\n {transcribed_text}"
         await message_handle(update, context, message=transcribed_text)
 
         # dialog_messages = db.get_dialog_messages(user_id)
