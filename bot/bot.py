@@ -225,63 +225,64 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
             await update.message.chat.send_action(action="typing")
 
             if _message is None or len(_message) == 0:
-                 await update.message.reply_text("🥲 You sent <b>empty message</b>. Please, try again!", parse_mode=ParseMode.HTML)
-                 return
+                await update.message.reply_text("🥲 You sent <b>empty message</b>. Please, try again!", parse_mode=ParseMode.HTML)
+                return
 
             dialog_messages = db.get_dialog_messages(user_id, dialog_id=None)
-            print("Dialog Messages:", dialog_messages, flush=True)
+            # print("Dialog Messages:", dialog_messages, flush=True)
+
             parse_mode = {
                 "html": ParseMode.HTML,
                 "markdown": ParseMode.MARKDOWN
             }[config.chat_modes[chat_mode]["parse_mode"]]
 
-            print(type(_message), _message, flush=True)
+            # print(type(_message), _message, flush=True)
             langchain_instance=langchain_utils.LANGCHAIN(current_model)
-            langchain_response = langchain_instance('dini10', message,dialog_messages, chat_mode)
-            print(langchain_response, flush=True)
+            answer, n_input_tokens, n_output_tokens, n_first_dialog_messages_removed = langchain_instance(_message, [], chat_mode)
             
-            chatgpt_instance = openai_utils.ChatGPT(model=current_model)
-            if config.enable_message_streaming:
-                gen = chatgpt_instance.send_message_stream(_message, dialog_messages=dialog_messages, chat_mode=chat_mode)
-            else:
-                answer, (n_input_tokens, n_output_tokens), n_first_dialog_messages_removed = await chatgpt_instance.send_message(
-                    _message,
-                    dialog_messages=dialog_messages,
-                    chat_mode=chat_mode
-                )
+            # chatgpt_instance = openai_utils.ChatGPT(model=current_model)
+            # if config.enable_message_streaming:
+            #     gen = chatgpt_instance.send_message_stream(_message, dialog_messages=dialog_messages, chat_mode=chat_mode)
+            # else:
+            #     answer, (n_input_tokens, n_output_tokens), n_first_dialog_messages_removed = await chatgpt_instance.send_message(
+            #         _message,
+            #         dialog_messages=dialog_messages,
+            #         chat_mode=chat_mode
+            #     )
 
-                async def fake_gen():
-                    yield "finished", answer, (n_input_tokens, n_output_tokens), n_first_dialog_messages_removed
+            #     async def fake_gen():
+            #         yield "finished", answer, (n_input_tokens, n_output_tokens), n_first_dialog_messages_removed
 
-                gen = fake_gen()
+            #     gen = fake_gen()
 
-            prev_answer = ""
+            # prev_answer = ""
             # prev_answer = langchain_response
 
-            async for gen_item in gen:
-                status, answer, (n_input_tokens, n_output_tokens), n_first_dialog_messages_removed = gen_item
+            # async for gen_item in gen:
+                # status, answer, (n_input_tokens, n_output_tokens), n_first_dialog_messages_removed = gen_item
 
-                answer = answer[:4096]  # telegram message limit
+            answer = answer[:4096]  # telegram message limit
 
-                # update only when 100 new symbols are ready
-                if abs(len(answer) - len(prev_answer)) < 100 and status != "finished":
-                    continue
+            # update only when 100 new symbols are ready
+            # if abs(len(answer) - len(prev_answer)) < 100 and status != "finished":
+            #     continue
 
-                try:
-                    await context.bot.edit_message_text(answer, chat_id=placeholder_message.chat_id, message_id=placeholder_message.message_id, parse_mode=parse_mode)
-                except telegram.error.BadRequest as e:
-                    if str(e).startswith("Message is not modified"):
-                        continue
-                    else:
-                        await context.bot.edit_message_text(answer, chat_id=placeholder_message.chat_id, message_id=placeholder_message.message_id)
+            try:
+                await context.bot.edit_message_text(answer, chat_id=placeholder_message.chat_id, message_id=placeholder_message.message_id, parse_mode=parse_mode)
+            except telegram.error.BadRequest as e:
+                if str(e).startswith("Message is not modified"):
+                    pass
+                else:
+                    await context.bot.edit_message_text(answer, chat_id=placeholder_message.chat_id, message_id=placeholder_message.message_id)
 
-                await asyncio.sleep(0.01)  # wait a bit to avoid flooding
+            await asyncio.sleep(0.01)  # wait a bit to avoid flooding
 
-                prev_answer = answer
+            # prev_answer = answer
 
             # update user data
             new_dialog_message = {"user": _message, "bot": answer, "date": datetime.now()}
             print("NDM:", new_dialog_message, flush=True)
+        
             db.set_dialog_messages(
                 user_id,
                 db.get_dialog_messages(user_id, dialog_id=None) + [new_dialog_message],
@@ -366,9 +367,8 @@ async def voice_message_handle(update: Update, context: CallbackContext):
 
     await message_handle(update, context, message=transcribed_text)
 
-async def vision_message_handle(
-    update: Update, context: CallbackContext, use_new_dialog_timeout: bool = True
-):
+
+async def vision_message_handle(update: Update, context: CallbackContext, use_new_dialog_timeout: bool = True):
         # check if bot was mentioned (for group chats)
     if not await is_bot_mentioned(update, context):
         return
@@ -399,6 +399,7 @@ async def vision_message_handle(
                 f"Starting new dialog due to timeout (<b>{config.chat_modes[chat_mode]['name']}</b> mode) ✅",
                 parse_mode=ParseMode.HTML,
             )
+
     photo = update.message.effective_attachment[-1]
     photo_file = await context.bot.get_file(photo.file_id)
 
@@ -407,117 +408,127 @@ async def vision_message_handle(
     await photo_file.download_to_memory(buf)
     buf.name = "image.jpg"  # file extension is required
     buf.seek(0)  # move cursor to the beginning of the buffer
+    # Open the image using Pillow
+    from PIL import Image
+    image = Image.open(buf)
+
+    # Save the image to a file
+    image.save("media/image.jpg")
+
+    # If you want to specify a different format (e.g., PNG), you can do so:
+    # image.save("path/to/save/image.png", format="PNG")
 
     # in case of CancelledError
     n_input_tokens, n_output_tokens = 0, 0
-    print("In Vision HANDLE!!!!!", flush=True)
+    print("In Vision HANDLE!!!!!", buf.name, '<=filename', flush=True)
 
-    try:
-        # send placeholder message to user
-        placeholder_message = await update.message.reply_text("...")
-        message = update.message.caption
+    # try:
+    # send placeholder message to user
+    placeholder_message = await update.message.reply_text("...")
+    message = update.message.caption
 
-        # send typing action
-        await update.message.chat.send_action(action="typing")
+    # send typing action
+    await update.message.chat.send_action(action="typing")
 
-        if message is None or len(message) == 0:
-            await update.message.reply_text(
-                "🥲 You sent <b>empty message</b>. Please, try again!",
-                parse_mode=ParseMode.HTML,
-            )
-            return
-
-        dialog_messages = await db.get_dialog_messages(user_id)
-        parse_mode = {"html": ParseMode.HTML, "markdown": ParseMode.MARKDOWN}[
-            config.chat_modes[chat_mode]["parse_mode"]
-        ]
-
-        chatgpt_instance = openai_utils.ChatGPT(model=current_model)
-        if config.enable_message_streaming:
-            gen = chatgpt_instance.send_vision_message_stream(
-                message,
-                dialog_messages=dialog_messages,
-                image_buffer=buf,
-                chat_mode=chat_mode,
-            )
-        else:
-            (
-                answer,
-                (n_input_tokens, n_output_tokens),
-                n_first_dialog_messages_removed,
-            ) = await chatgpt_instance.send_vision_message(
-                message,
-                dialog_messages=dialog_messages,
-                image_buffer=buf,
-                chat_mode=chat_mode,
-            )
-
-            async def fake_gen():
-                yield "finished", answer, (
-                    n_input_tokens,
-                    n_output_tokens,
-                ), n_first_dialog_messages_removed
-
-            gen = fake_gen()
-
-        prev_answer = ""
-        async for gen_item in gen:
-            (
-                status,
-                answer,
-                (n_input_tokens, n_output_tokens),
-                n_first_dialog_messages_removed,
-            ) = gen_item
-
-            answer = answer[:4096]  # telegram message limit
-
-            # update only when 100 new symbols are ready
-            if abs(len(answer) - len(prev_answer)) < 100 and status != "finished":
-                continue
-
-            try:
-                await context.bot.edit_message_text(
-                    answer,
-                    chat_id=placeholder_message.chat_id,
-                    message_id=placeholder_message.message_id,
-                    parse_mode=parse_mode,
-                )
-            except telegram_error.BadRequest as e:
-                if str(e).startswith("Message is not modified"):
-                    continue
-                else:
-                    await context.bot.edit_message_text(
-                        answer,
-                        chat_id=placeholder_message.chat_id,
-                        message_id=placeholder_message.message_id,
-                    )
-
-            await asyncio.sleep(0.01)  # wait a bit to avoid flooding
-
-            prev_answer = answer
-
-        # update user data
-        new_dialog_message = {
-            "user": message,
-            "bot": answer,
-            "date": datetime.now(),
-        }
-
-        await db.set_dialog_messages(
-            user_id, await db.get_dialog_messages(user_id) + [new_dialog_message]
+    if message is None or len(message) == 0:
+        await update.message.reply_text(
+            "🥲 You sent <b>empty message</b>. Please, try again!",
+            parse_mode=ParseMode.HTML,
         )
-
-        await db.update_n_used_tokens(user_id, current_model, n_input_tokens, n_output_tokens)
-        
-    except asyncio.CancelledError:
-        # note: intermediate token updates only work when enable_message_streaming=True (config.yml)
-        await db.update_n_used_tokens(user_id, current_model, n_input_tokens, n_output_tokens)
-        raise
-    except Exception as e:
-        error_text = f"Something went wrong during completion. Reason: {e}"
-        logger.error(error_text)
-        await update.message.reply_text(error_text)
         return
+
+    dialog_messages = db.get_dialog_messages(user_id)
+    parse_mode = {"html": ParseMode.HTML, "markdown": ParseMode.MARKDOWN}[
+        config.chat_modes[chat_mode]["parse_mode"]
+    ]
+
+    # chatgpt_instance = openai_utils.ChatGPT(model=current_model)
+    # if config.enable_message_streaming:
+    #     gen = chatgpt_instance.send_vision_message_stream(
+    #         message,
+    #         dialog_messages=dialog_messages,
+    #         image_buffer=buf,
+    #         chat_mode=chat_mode,
+    #     )
+    # else:
+    #     (
+    #         answer,
+    #         (n_input_tokens, n_output_tokens),
+    #         n_first_dialog_messages_removed,
+    #     ) = await chatgpt_instance.send_vision_message(
+    #         message,
+    #         dialog_messages=dialog_messages,
+    #         image_buffer=buf,
+    #         chat_mode=chat_mode,
+    #     )
+
+    #     async def fake_gen():
+    #         yield "finished", answer, (
+    #             n_input_tokens,
+    #             n_output_tokens,
+    #         ), n_first_dialog_messages_removed
+
+    #     gen = fake_gen()
+
+    # prev_answer = ""
+    # async for gen_item in gen:
+    #     (
+    #         status,
+    #         answer,
+    #         (n_input_tokens, n_output_tokens),
+    #         n_first_dialog_messages_removed,
+    #     ) = gen_item
+
+    #     answer = answer[:4096]  # telegram message limit
+
+    #     # update only when 100 new symbols are ready
+    #     if abs(len(answer) - len(prev_answer)) < 100 and status != "finished":
+    #         continue
+
+    #     try:
+    #         await context.bot.edit_message_text(
+    #             answer,
+    #             chat_id=placeholder_message.chat_id,
+    #             message_id=placeholder_message.message_id,
+    #             parse_mode=parse_mode,
+    #         )
+    #     except telegram_error.BadRequest as e:
+    #         if str(e).startswith("Message is not modified"):
+    #             continue
+    #         else:
+    #             await context.bot.edit_message_text(
+    #                 answer,
+    #                 chat_id=placeholder_message.chat_id,
+    #                 message_id=placeholder_message.message_id,
+    #             )
+
+    #     await asyncio.sleep(0.01)  # wait a bit to avoid flooding
+
+    #     prev_answer = answer
+
+    # # update user data
+    # new_dialog_message = {
+    #     "user": message,
+    #     "bot": answer,
+    #     "date": datetime.now(),
+    # }
+
+    # await db.set_dialog_messages(
+    #     user_id, await db.get_dialog_messages(user_id) + [new_dialog_message]
+    # )
+
+    # await db.update_n_used_tokens(user_id, current_model, n_input_tokens, n_output_tokens)
+        
+    # except asyncio.CancelledError:
+    #     # note: intermediate token updates only work when enable_message_streaming=True (config.yml)
+    #     await db.update_n_used_tokens(user_id, current_model, n_input_tokens, n_output_tokens)
+    #     raise
+    # except Exception as e:
+    #     error_text = f"Something went wrong during completion. Reason: {e}"
+    #     logger.error(error_text)
+    #     await update.message.reply_text(error_text)
+    #     return
+
 
 async def generate_image_handle(update: Update, context: CallbackContext, message=None):
     await register_user_if_not_exists(update, context, update.message.from_user)
@@ -798,6 +809,7 @@ async def error_handle(update: Update, context: CallbackContext) -> None:
     except:
         await context.bot.send_message(update.effective_chat.id, "Some error in error handler")
 
+
 async def post_init(application: Application):
     await application.bot.set_my_commands([
         BotCommand("/new", "Start new dialog"),
@@ -807,6 +819,7 @@ async def post_init(application: Application):
         BotCommand("/settings", "Show settings"),
         BotCommand("/help", "Show help message"),
     ])
+
 
 def run_bot() -> None:
     application = (

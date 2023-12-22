@@ -135,3 +135,5 @@ config/config.env
 docker-compose.dev.yml
 
 mongodb/
+media/*
+!media/.keep
