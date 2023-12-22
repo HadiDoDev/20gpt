@@ -455,6 +455,8 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
         #     return
         if message:
             extracted_text = f"{message}\n {extracted_text}"
+        
+        await context.bot.delete_message(chat_id=placeholder_message.chat_id, message_id=placeholder_message.message_id)
         await message_handle(update, context, message=extracted_text)
 
         # dialog_messages = db.get_dialog_messages(user_id)
