@@ -98,13 +98,13 @@ class LANGCHAIN:
       chain = self._create_chain(prompt, self.llm, db)
       # chain = (RunnableParallel({"context": itemgetter("question") | db.as_retriever(), 'question': RunnablePassthrough()}) | self.prompt | self.llm)
       print("Message:", message, type(message), flush=True)
-      response = chain.invoke({'question':message}).content
-      # with get_openai_callback() as cost:
-      #   print("OpenAPI Callback:", flush=True)
-      #   response = chain.invoke({'question':message}).content
-      #   print("Get Response:", flush=True)
-      #   in_tokens, out_tokens = cost.prompt_tokens, cost.completion_tokens
-      print("Response:", response, flush=True)
+      # response = chain.invoke({'question':message}).content
+      with get_openai_callback() as cost:
+        print("OpenAPI Callback:", flush=True)
+        response = chain.invoke({'question':message}).content
+        print("Get Response:", flush=True)
+        in_tokens, out_tokens = cost.prompt_tokens, cost.completion_tokens
+
     # if topic=='dini10':
     #   print(message)
     #   with get_openai_callback() as cost:
