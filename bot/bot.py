@@ -438,14 +438,15 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
     # send placeholder message to user
     placeholder_message = await update.message.reply_text("...")
 
+    # send typing action
+    await update.message.chat.send_action(action="typing")
+
     filelink = f"http://51.89.156.250:8095/{image.name.split('/')[-1]}"
     added_image = eboo_utils.addfile(filelink)
     extracted_text = eboo_utils.convert(added_image['FileToken'])
+    
     try:
         message = update.message.caption
-
-        # send typing action
-        await update.message.chat.send_action(action="typing")
 
         # if message is None or len(message) == 0:
         #     await update.message.reply_text(
