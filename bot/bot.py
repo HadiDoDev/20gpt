@@ -254,29 +254,29 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
 
         #     gen = fake_gen()
 
-        # prev_answer = ""
-        # # prev_answer = langchain_response
+        prev_answer = ""
+        # prev_answer = langchain_response
 
         # async for gen_item in gen:
-        #     status, answer, (n_input_tokens, n_output_tokens), n_first_dialog_messages_removed = gen_item
+            # status, answer, (n_input_tokens, n_output_tokens), n_first_dialog_messages_removed = gen_item
 
-        #     answer = answer[:4096]  # telegram message limit
+        answer = answer[:4096]  # telegram message limit
 
-        #     # update only when 100 new symbols are ready
-        #     if abs(len(answer) - len(prev_answer)) < 100 and status != "finished":
-        #         continue
+        # update only when 100 new symbols are ready
+        # if abs(len(answer) - len(prev_answer)) < 100 and status != "finished":
+        #     continue
 
-        #     try:
-        #         await context.bot.edit_message_text(answer, chat_id=placeholder_message.chat_id, message_id=placeholder_message.message_id, parse_mode=parse_mode)
-        #     except telegram.error.BadRequest as e:
-        #         if str(e).startswith("Message is not modified"):
-        #             continue
-        #         else:
-        #             await context.bot.edit_message_text(answer, chat_id=placeholder_message.chat_id, message_id=placeholder_message.message_id)
+        try:
+            await context.bot.edit_message_text(answer, chat_id=placeholder_message.chat_id, message_id=placeholder_message.message_id, parse_mode=parse_mode)
+        except telegram.error.BadRequest as e:
+            if str(e).startswith("Message is not modified"):
+                pass
+            else:
+                await context.bot.edit_message_text(answer, chat_id=placeholder_message.chat_id, message_id=placeholder_message.message_id)
 
-        #     await asyncio.sleep(0.01)  # wait a bit to avoid flooding
+        await asyncio.sleep(0.01)  # wait a bit to avoid flooding
 
-        #     prev_answer = answer
+        prev_answer = answer
 
         # update user data
         new_dialog_message = {"user": _message, "bot": answer, "date": datetime.now()}
