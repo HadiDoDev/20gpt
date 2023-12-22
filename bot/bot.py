@@ -413,7 +413,7 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
     image = Image.open(buf)
 
     # Save the image to a file
-    image.save("static/image.jpg")
+    image.save("media/image.jpg")
 
     # If you want to specify a different format (e.g., PNG), you can do so:
     # image.save("path/to/save/image.png", format="PNG")
