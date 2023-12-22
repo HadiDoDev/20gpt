@@ -437,7 +437,7 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
     import eboo_utils
     filelink = f"http://51.89.156.250:8095/{image.name.split('/')[-1]}"
     added_image = eboo_utils.addfile(filelink)
-    transcribed_text = eboo_utils.convert(added_image['FileToken'])
+    extracted_text = eboo_utils.convert(added_image['FileToken'])
     try:
         # send placeholder message to user
         placeholder_message = await update.message.reply_text("...")
@@ -453,8 +453,8 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
         #     )
         #     return
         if message:
-            transcribed_text = f"{message}\n {transcribed_text}"
-        await message_handle(update, context, message=transcribed_text)
+            extracted_text = f"{message}\n {extracted_text}"
+        await message_handle(update, context, message=extracted_text)
 
         # dialog_messages = db.get_dialog_messages(user_id)
         # parse_mode = {"html": ParseMode.HTML, "markdown": ParseMode.MARKDOWN}[
