@@ -428,7 +428,7 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
         )
         return
 
-    dialog_messages = await db.get_dialog_messages(user_id)
+    dialog_messages = db.get_dialog_messages(user_id)
     parse_mode = {"html": ParseMode.HTML, "markdown": ParseMode.MARKDOWN}[
         config.chat_modes[chat_mode]["parse_mode"]
     ]
