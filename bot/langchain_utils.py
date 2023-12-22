@@ -97,7 +97,9 @@ class LANGCHAIN:
       chain = self._create_chain(prompt, self.llm, db)
       print("Chain:", chain, flush=True)
       with get_openai_callback() as cost:
+        print("OpenAPI Callback:", flush=True)
         response = chain.invoke({'question':message}).content
+        print("Get Response:", flush=True)
         in_tokens, out_tokens = cost.prompt_tokens, cost.completion_tokens
       print("Response:", response, flush=True)
     # if topic=='dini10':
