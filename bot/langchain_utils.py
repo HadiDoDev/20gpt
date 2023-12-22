@@ -72,6 +72,7 @@ class LANGCHAIN:
   @staticmethod
   def _generate_prompt_messages(message, dialog_messages, chat_mode):
     prompt = config.chat_modes[chat_mode]["prompt_start"]
+    print("Prompt Type:", type(prompt), flush=True)
     messages = [("system", prompt)]
     for dialog_message in dialog_messages:
         messages.append(("human", dialog_message["user"]))
@@ -94,7 +95,7 @@ class LANGCHAIN:
       prompt = self._generate_prompt_messages(message, dialog_messages, chatmode)
       print("Prompt:", prompt, flush=True)
       # chain = self._create_chain(prompt, self.llm, db)
-      chain = (RunnableParallel({"context": itemgetter("question") | db.as_retriever(),'question': RunnablePassthrough()}) | prompt | self.llm)
+      chain = (RunnableParallel({"context": itemgetter("question") | db.as_retriever(), 'question': RunnablePassthrough()}) | prompt | self.llm)
       response = chain.invoke({'question':message}).content
       # with get_openai_callback() as cost:
       #   print("OpenAPI Callback:", flush=True)
