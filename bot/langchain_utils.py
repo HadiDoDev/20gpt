@@ -93,7 +93,8 @@ class LANGCHAIN:
       db = connect_to_vs(chatmode)
       prompt = self._generate_prompt_messages(message, dialog_messages, chatmode)
       print("Prompt:", prompt, flush=True)
-      chain = self._create_chain(prompt, self.llm, db)
+      # chain = self._create_chain(prompt, self.llm, db)
+      chain = (RunnableParallel({"context": itemgetter("question") | db.as_retriever(),'question': RunnablePassthrough()}) | prompt | self.llm)
       response = chain.invoke({'question':message}).content
       # with get_openai_callback() as cost:
       #   print("OpenAPI Callback:", flush=True)
