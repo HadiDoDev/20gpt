@@ -83,6 +83,7 @@ class LANGCHAIN:
     return db
 
   def __call__(self, topic, message,dialog_messages, chatmode):
+    print("In __call__, chatmode:", chatmode, flush=True)
     if chatmode in ['dini10']: 
       db = self.connect_to_vs(chatmode)
       print("DB:", db.similarity_search(message), flush=True)
