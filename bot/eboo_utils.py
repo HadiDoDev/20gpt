@@ -28,5 +28,5 @@ def convert(filetoken):
     data['output'] = 'txtraw'
 
     res = requests.post(url, data=data)
-    print("Convert Res:", res.json(), flush=True)
+    print("Convert Res:", res.content, flush=True)
     return res.json()
