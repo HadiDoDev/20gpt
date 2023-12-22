@@ -63,8 +63,9 @@ class LANGCHAIN:
     # db = connect_to_vs('dini10')
     # self.db = db 
     # # self.chain = (RunnableParallel({'context':db.as_retriever(),"question": RunnablePassthrough()}))|prompt|self.llm
-    # prompt = ChatPromptTemplate.from_messages([("system", "you are a helpful assistant and you always extract and return reliable answer only from your {context}.\
-    # i will gave you Multiple-choice questions and just retun correct ONE, NOTHING MORE"), ("human","{question}" )])
+    prompt = ChatPromptTemplate.from_messages([("system", "you are a helpful assistant and you always extract and return reliable answer only from your {context}.\
+    i will gave you Multiple-choice questions and just retun correct ONE, NOTHING MORE"), ("human","{question}" )])
+    self.prompt = prompt
     # self.chain = (RunnableParallel(
     #   {"context": itemgetter("question") | db.as_retriever(),'question': RunnablePassthrough()}
     #   ) | prompt |self.llm)
@@ -95,7 +96,7 @@ class LANGCHAIN:
       prompt = self._generate_prompt_messages(message, dialog_messages, chatmode)
       print("Prompt:", prompt, flush=True)
       # chain = self._create_chain(prompt, self.llm, db)
-      chain = (RunnableParallel({"context": itemgetter("question") | db.as_retriever(), 'question': RunnablePassthrough()}) | prompt | self.llm)
+      chain = (RunnableParallel({"context": itemgetter("question") | db.as_retriever(), 'question': RunnablePassthrough()}) | self.prompt | self.llm)
       response = chain.invoke({'question':message}).content
       # with get_openai_callback() as cost:
       #   print("OpenAPI Callback:", flush=True)
