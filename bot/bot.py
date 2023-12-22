@@ -4,6 +4,9 @@ import asyncio
 import traceback
 import html
 import json
+from tempfile import NamedTemporaryFile
+from PIL import Image
+
 from datetime import datetime
 import openai
 
@@ -406,14 +409,22 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
     # store file in memory, not on disk
     buf = io.BytesIO()
     await photo_file.download_to_memory(buf)
-    buf.name = "image.jpg"  # file extension is required
+
+    # buf.name = "image.jpg"  # file extension is required
     buf.seek(0)  # move cursor to the beginning of the buffer
     # Open the image using Pillow
-    from PIL import Image
-    image = Image.open(buf)
+    # image = Image.open(buf)
 
     # Save the image to a file
-    image.save("media/image.jpg")
+    # image.save("media/image.jpg")
+
+    image = NamedTemporaryFile(
+        dir='media/',
+        prefix=str(user_id),
+        suffix='.jpg'
+    )
+    image.write(buf.read())
+    image.close()
 
     # If you want to specify a different format (e.g., PNG), you can do so:
     # image.save("path/to/save/image.png", format="PNG")
