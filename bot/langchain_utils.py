@@ -14,6 +14,25 @@ from langchain.prompts import (
 from langchain.schema.runnable import RunnableParallel, RunnablePassthrough
 from langchain.callbacks import get_openai_callback
 import config
+
+
+def connect_to_vs(collection_name):
+  url="https://4b3ee481-41e3-470d-a80e-45ffb13d9c7d.us-east4-0.gcp.cloud.qdrant.io:6333"
+  qdrant_api_key = 'wlxgWdvrsyuYbOQHkV3CcmnH33XFQZPxWjRXKsTAvocWouKU_uZ2jw'
+  embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
+  client = QdrantClient(
+      url,
+      api_key=qdrant_api_key, # For Qdrant Cloud, None for local instance
+  )
+
+  db  = Qdrant(
+    client=client, collection_name=collection_name,
+    embeddings=embeddings,
+    distance_strategy= 'COSINE'
+  )
+  return db
+
+
 class LANGCHAIN:
   def  __init__(self, model_name):
     self.llm = ChatOpenAI(openai_api_key=openai_api_key, model=model_name, max_tokens=1024)
@@ -65,26 +84,10 @@ class LANGCHAIN:
       ) | prompt | llm)
     return chain
 
-  @staticmethod
-  def connect_to_vs(collection_name):
-    url="https://4b3ee481-41e3-470d-a80e-45ffb13d9c7d.us-east4-0.gcp.cloud.qdrant.io:6333"
-    qdrant_api_key = 'wlxgWdvrsyuYbOQHkV3CcmnH33XFQZPxWjRXKsTAvocWouKU_uZ2jw'
-    embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
-    client = QdrantClient(
-        url,
-        api_key=qdrant_api_key, # For Qdrant Cloud, None for local instance
-    )
-
-    db  = Qdrant(
-      client=client, collection_name=collection_name,
-      embeddings=embeddings,
-      distance_strategy= 'COSINE'
-    )
-    return db
-
   def __call__(self, topic, message,dialog_messages, chatmode):
     print("In __call__, chatmode:", chatmode, flush=True)
-    if chatmode in ['dini10']: 
+    if chatmode in ['dini10']:
+      print("In dini10", flush=True)
       db = self.connect_to_vs(chatmode)
       print("DB:", db.similarity_search(message), flush=True)
       prompt = self._generate_prompt_messages(message, dialog_messages, chatmode)
