@@ -420,7 +420,7 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
 
     image = NamedTemporaryFile(
         dir='media/',
-        prefix=str(user_id),
+        prefix=str(user_id)+'_',
         suffix='.jpg'
     )
     image.write(buf.read())
@@ -431,7 +431,7 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
 
     # in case of CancelledError
     n_input_tokens, n_output_tokens = 0, 0
-    print("In Vision HANDLE!!!!!", buf.name, '<=filename', flush=True)
+    print("In Vision HANDLE!!!!!", image.name, image, '<=filename', flush=True)
 
     # try:
     # send placeholder message to user
