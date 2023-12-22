@@ -436,7 +436,7 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
     print("In Vision HANDLE!!!!!", image.name, image, '<=filename', flush=True)
 
     # send placeholder message to user
-    placeholder_message = await update.message.reply_text("...")
+    placeholder_message = await update.message.reply_text("درحال جستجو در اسناد...")
 
     # send typing action
     await update.message.chat.send_action(action="typing")
@@ -444,7 +444,7 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
     filelink = f"http://51.89.156.250:8095/{image.name.split('/')[-1]}"
     added_image = eboo_utils.addfile(filelink)
     extracted_text = eboo_utils.convert(added_image['FileToken'])
-    
+
     try:
         message = update.message.caption
 
