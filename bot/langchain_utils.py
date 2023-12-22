@@ -105,7 +105,6 @@ class LANGCHAIN:
         answer = chain.invoke({'question':message}).content
         answer = self._postprocess_answer(answer)
         print("Get Response:", flush=True)
-        n_input_tokens, n_output_tokens
         n_input_tokens, n_output_tokens = cost.prompt_tokens, cost.completion_tokens
 
     # if topic=='dini10':
