@@ -88,7 +88,7 @@ class LANGCHAIN:
     print("In __call__, chatmode:", chatmode, flush=True)
     if chatmode in ['dini10']:
       print("In dini10", flush=True)
-      db = self.connect_to_vs(chatmode)
+      db = connect_to_vs(chatmode)
       print("DB:", db.similarity_search(message), flush=True)
       prompt = self._generate_prompt_messages(message, dialog_messages, chatmode)
       print("Prompt:", prompt, flush=True)
