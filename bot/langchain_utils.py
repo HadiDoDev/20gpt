@@ -17,34 +17,36 @@ import config
 class LANGCHAIN:
   def  __init__(self, model_name):
     self.llm = ChatOpenAI(openai_api_key=openai_api_key, model=model_name, max_tokens=1024)
+    print("In initializer!", flush=True)
     # self.embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
-    prompt = ChatPromptTemplate.from_messages([
-      ("system", "you are a helpful assistant and you always extract and return reliable answer only from your {context}.\
-       write at most 100 words in your output "), ("human", "{question}")
-      ])
-    def connect_to_vs(collection_name):
-      url="https://4b3ee481-41e3-470d-a80e-45ffb13d9c7d.us-east4-0.gcp.cloud.qdrant.io:6333"
-      qdrant_api_key = 'wlxgWdvrsyuYbOQHkV3CcmnH33XFQZPxWjRXKsTAvocWouKU_uZ2jw'
-      embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
-      client = QdrantClient(
-          url,
-          api_key=qdrant_api_key, # For Qdrant Cloud, None for local instance
-      )
+    # prompt = ChatPromptTemplate.from_messages([
+    #   ("system", "you are a helpful assistant and you always extract and return reliable answer only from your {context}.\
+    #    write at most 100 words in your output "), ("human", "{question}")
+    #   ])
+    # def connect_to_vs(collection_name):
+    #   url="https://4b3ee481-41e3-470d-a80e-45ffb13d9c7d.us-east4-0.gcp.cloud.qdrant.io:6333"
+    #   qdrant_api_key = 'wlxgWdvrsyuYbOQHkV3CcmnH33XFQZPxWjRXKsTAvocWouKU_uZ2jw'
+    #   embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
+    #   client = QdrantClient(
+    #       url,
+    #       api_key=qdrant_api_key, # For Qdrant Cloud, None for local instance
+    #   )
 
-      db  = Qdrant(
-        client=client, collection_name=collection_name,
-        embeddings=embeddings,
-        distance_strategy= 'COSINE'
-      )
-      return db
-    db = connect_to_vs('dini10')
-    self.db = db 
-    # self.chain = (RunnableParallel({'context':db.as_retriever(),"question": RunnablePassthrough()}))|prompt|self.llm
-    prompt = ChatPromptTemplate.from_messages([("system", "you are a helpful assistant and you always extract and return reliable answer only from your {context}.\
-    i will gave you Multiple-choice questions and just retun correct ONE, NOTHING MORE"), ("human","{question}" )])
-    self.chain = (RunnableParallel(
-      {"context": itemgetter("question") | db.as_retriever(),'question': RunnablePassthrough()}
-      ) | prompt |self.llm)
+    #   db  = Qdrant(
+    #     client=client, collection_name=collection_name,
+    #     embeddings=embeddings,
+    #     distance_strategy= 'COSINE'
+    #   )
+    #   return db
+    # db = connect_to_vs('dini10')
+    # self.db = db 
+    # # self.chain = (RunnableParallel({'context':db.as_retriever(),"question": RunnablePassthrough()}))|prompt|self.llm
+    # prompt = ChatPromptTemplate.from_messages([("system", "you are a helpful assistant and you always extract and return reliable answer only from your {context}.\
+    # i will gave you Multiple-choice questions and just retun correct ONE, NOTHING MORE"), ("human","{question}" )])
+    # self.chain = (RunnableParallel(
+    #   {"context": itemgetter("question") | db.as_retriever(),'question': RunnablePassthrough()}
+    #   ) | prompt |self.llm)
+
   @staticmethod
   def _generate_prompt_messages(message, dialog_messages, chat_mode):
     prompt = config.chat_modes[chat_mode]["prompt_start"]
@@ -62,6 +64,7 @@ class LANGCHAIN:
       {"context": itemgetter("question") | db.as_retriever(),'question': RunnablePassthrough()}
       ) | prompt | llm)
     return chain
+
   @staticmethod
   def connect_to_vs(collection_name):
     url="https://4b3ee481-41e3-470d-a80e-45ffb13d9c7d.us-east4-0.gcp.cloud.qdrant.io:6333"
@@ -78,6 +81,7 @@ class LANGCHAIN:
       distance_strategy= 'COSINE'
     )
     return db
+
   def __call__(self, topic, message,dialog_messages, chatmode):
     if chatmode in ['dini10']: 
       db = self.connect_to_vs(chatmode)
