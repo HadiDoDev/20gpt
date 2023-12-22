@@ -217,89 +217,89 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
         n_input_tokens, n_output_tokens = 0, 0
         current_model = db.get_user_attribute(user_id, "current_model")
 
-        try:
-            # send placeholder message to user
-            placeholder_message = await update.message.reply_text("...")
+        # try:
+        # send placeholder message to user
+        placeholder_message = await update.message.reply_text("...")
 
-            # send typing action
-            await update.message.chat.send_action(action="typing")
+        # send typing action
+        await update.message.chat.send_action(action="typing")
 
-            if _message is None or len(_message) == 0:
-                 await update.message.reply_text("🥲 You sent <b>empty message</b>. Please, try again!", parse_mode=ParseMode.HTML)
-                 return
+        if _message is None or len(_message) == 0:
+                await update.message.reply_text("🥲 You sent <b>empty message</b>. Please, try again!", parse_mode=ParseMode.HTML)
+                return
 
-            dialog_messages = db.get_dialog_messages(user_id, dialog_id=None)
-            print("Dialog Messages:", dialog_messages, flush=True)
-            parse_mode = {
-                "html": ParseMode.HTML,
-                "markdown": ParseMode.MARKDOWN
-            }[config.chat_modes[chat_mode]["parse_mode"]]
+        dialog_messages = db.get_dialog_messages(user_id, dialog_id=None)
+        print("Dialog Messages:", dialog_messages, flush=True)
+        parse_mode = {
+            "html": ParseMode.HTML,
+            "markdown": ParseMode.MARKDOWN
+        }[config.chat_modes[chat_mode]["parse_mode"]]
 
-            print(type(_message), _message, flush=True)
-            langchain_instance=langchain_utils.LANGCHAIN(current_model)
-            langchain_response = langchain_instance('dini10', message,dialog_messages, chat_mode)
-            print(langchain_response, flush=True)
-            
-            chatgpt_instance = openai_utils.ChatGPT(model=current_model)
-            if config.enable_message_streaming:
-                gen = chatgpt_instance.send_message_stream(_message, dialog_messages=dialog_messages, chat_mode=chat_mode)
-            else:
-                answer, (n_input_tokens, n_output_tokens), n_first_dialog_messages_removed = await chatgpt_instance.send_message(
-                    _message,
-                    dialog_messages=dialog_messages,
-                    chat_mode=chat_mode
-                )
-
-                async def fake_gen():
-                    yield "finished", answer, (n_input_tokens, n_output_tokens), n_first_dialog_messages_removed
-
-                gen = fake_gen()
-
-            prev_answer = ""
-            # prev_answer = langchain_response
-
-            async for gen_item in gen:
-                status, answer, (n_input_tokens, n_output_tokens), n_first_dialog_messages_removed = gen_item
-
-                answer = answer[:4096]  # telegram message limit
-
-                # update only when 100 new symbols are ready
-                if abs(len(answer) - len(prev_answer)) < 100 and status != "finished":
-                    continue
-
-                try:
-                    await context.bot.edit_message_text(answer, chat_id=placeholder_message.chat_id, message_id=placeholder_message.message_id, parse_mode=parse_mode)
-                except telegram.error.BadRequest as e:
-                    if str(e).startswith("Message is not modified"):
-                        continue
-                    else:
-                        await context.bot.edit_message_text(answer, chat_id=placeholder_message.chat_id, message_id=placeholder_message.message_id)
-
-                await asyncio.sleep(0.01)  # wait a bit to avoid flooding
-
-                prev_answer = answer
-
-            # update user data
-            new_dialog_message = {"user": _message, "bot": answer, "date": datetime.now()}
-            print("NDM:", new_dialog_message, flush=True)
-            db.set_dialog_messages(
-                user_id,
-                db.get_dialog_messages(user_id, dialog_id=None) + [new_dialog_message],
-                dialog_id=None
+        print(type(_message), _message, flush=True)
+        langchain_instance=langchain_utils.LANGCHAIN(current_model)
+        langchain_response = langchain_instance('dini10', message,dialog_messages, chat_mode)
+        print(langchain_response, flush=True)
+        
+        chatgpt_instance = openai_utils.ChatGPT(model=current_model)
+        if config.enable_message_streaming:
+            gen = chatgpt_instance.send_message_stream(_message, dialog_messages=dialog_messages, chat_mode=chat_mode)
+        else:
+            answer, (n_input_tokens, n_output_tokens), n_first_dialog_messages_removed = await chatgpt_instance.send_message(
+                _message,
+                dialog_messages=dialog_messages,
+                chat_mode=chat_mode
             )
 
-            db.update_n_used_tokens(user_id, current_model, n_input_tokens, n_output_tokens)
+            async def fake_gen():
+                yield "finished", answer, (n_input_tokens, n_output_tokens), n_first_dialog_messages_removed
 
-        except asyncio.CancelledError:
-            # note: intermediate token updates only work when enable_message_streaming=True (config.yml)
-            db.update_n_used_tokens(user_id, current_model, n_input_tokens, n_output_tokens)
-            raise
+            gen = fake_gen()
 
-        except Exception as e:
-            error_text = f"Something went wrong during completion. Reason: {e}"
-            logger.error(error_text)
-            await update.message.reply_text(error_text)
-            return
+        prev_answer = ""
+        # prev_answer = langchain_response
+
+        async for gen_item in gen:
+            status, answer, (n_input_tokens, n_output_tokens), n_first_dialog_messages_removed = gen_item
+
+            answer = answer[:4096]  # telegram message limit
+
+            # update only when 100 new symbols are ready
+            if abs(len(answer) - len(prev_answer)) < 100 and status != "finished":
+                continue
+
+            try:
+                await context.bot.edit_message_text(answer, chat_id=placeholder_message.chat_id, message_id=placeholder_message.message_id, parse_mode=parse_mode)
+            except telegram.error.BadRequest as e:
+                if str(e).startswith("Message is not modified"):
+                    continue
+                else:
+                    await context.bot.edit_message_text(answer, chat_id=placeholder_message.chat_id, message_id=placeholder_message.message_id)
+
+            await asyncio.sleep(0.01)  # wait a bit to avoid flooding
+
+            prev_answer = answer
+
+        # update user data
+        new_dialog_message = {"user": _message, "bot": answer, "date": datetime.now()}
+        print("NDM:", new_dialog_message, flush=True)
+        db.set_dialog_messages(
+            user_id,
+            db.get_dialog_messages(user_id, dialog_id=None) + [new_dialog_message],
+            dialog_id=None
+        )
+
+        db.update_n_used_tokens(user_id, current_model, n_input_tokens, n_output_tokens)
+
+        # except asyncio.CancelledError:
+        #     # note: intermediate token updates only work when enable_message_streaming=True (config.yml)
+        #     db.update_n_used_tokens(user_id, current_model, n_input_tokens, n_output_tokens)
+        #     raise
+
+        # except Exception as e:
+        #     error_text = f"Something went wrong during completion. Reason: {e}"
+        #     logger.error(error_text)
+        #     await update.message.reply_text(error_text)
+        #     return
 
         # send message if some messages were removed from the context
         if n_first_dialog_messages_removed > 0:
