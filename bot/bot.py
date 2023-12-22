@@ -35,6 +35,7 @@ import config
 import database
 import openai_utils
 import langchain_utils
+import eboo_utils
 
 # setup
 db = database.Database()
@@ -434,13 +435,13 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
     n_input_tokens, n_output_tokens = 0, 0
     print("In Vision HANDLE!!!!!", image.name, image, '<=filename', flush=True)
 
-    import eboo_utils
+    # send placeholder message to user
+    placeholder_message = await update.message.reply_text("...")
+
     filelink = f"http://51.89.156.250:8095/{image.name.split('/')[-1]}"
     added_image = eboo_utils.addfile(filelink)
     extracted_text = eboo_utils.convert(added_image['FileToken'])
     try:
-        # send placeholder message to user
-        placeholder_message = await update.message.reply_text("...")
         message = update.message.caption
 
         # send typing action
