@@ -99,7 +99,7 @@ class LANGCHAIN:
       with get_openai_callback() as cost:
         response = chain.invoke({'question':message}).content
         in_tokens, out_tokens = cost.prompt_tokens, cost.completion_tokens
-
+      print("Response:", response, flush=True)
     # if topic=='dini10':
     #   print(message)
     #   with get_openai_callback() as cost:
