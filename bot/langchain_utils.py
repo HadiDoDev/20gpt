@@ -85,35 +85,30 @@ class LANGCHAIN:
   @staticmethod
   def _create_chain(prompt, llm, db):
     chain = (RunnableParallel(
-      {"context": itemgetter("question") | db.as_retriever(),'question': RunnablePassthrough()}
+      {"context": itemgetter("question") | db.as_retriever(), 'question': RunnablePassthrough()}
       ) | prompt | llm)
     return chain
   @staticmethod
   def _postprocess_answer(answer):
     answer = answer.strip()
     return answer
-  def __call__(self, topic, message, dialog_messages, chatmode):
+
+  def __call__(self, message, dialog_messages, chatmode):
     print("In __call__, chatmode:", chatmode, flush=True)
     if chatmode in ['dini10']:
       db = connect_to_vs(chatmode)
       prompt = self._generate_prompt_messages(message, dialog_messages, chatmode)
-      print("Prompt:", prompt, flush=True)
+      # print("Prompt:", prompt, flush=True)
       chain = self._create_chain(prompt, self.llm, db)
       print("Message:", message, type(message), flush=True)
       with get_openai_callback() as cost:
         print("OpenAPI Callback:", flush=True)
         answer = chain.invoke({'question':message}).content
         answer = self._postprocess_answer(answer)
-        print("Get Response:", flush=True)
+        # print("Get Response:", flush=True)
         n_input_tokens, n_output_tokens = cost.prompt_tokens, cost.completion_tokens
-
-    # if topic=='dini10':
-    #   print(message)
-    #   with get_openai_callback() as cost:
-    #     response = self.chain.invoke({'question':message}).content
-    #     in_tokens, out_tokens = cost.prompt_tokens, cost.completion_tokens
-
     else:
       answer, n_input_tokens, n_output_tokens = None, 0, 0
     n_first_dialog_messages_removed = 0
+
     return answer, n_input_tokens, n_output_tokens, n_first_dialog_messages_removed
