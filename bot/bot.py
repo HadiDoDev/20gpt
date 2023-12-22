@@ -435,7 +435,7 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
     print("In Vision HANDLE!!!!!", image.name, image, '<=filename', flush=True)
 
     import eboo_utils
-    filelink = f"http://51.89.156.250:8095/{image.file.name}"
+    filelink = f"http://51.89.156.250:8095/{image.name.split('/')[-1]}"
     added_file = eboo_utils.addfile(filelink)
     converted_file = eboo_utils.convert(added_file['FileToDownload'])
     # try:
