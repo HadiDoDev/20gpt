@@ -24,12 +24,14 @@ def connect_to_vs(collection_name):
       url,
       api_key=qdrant_api_key, # For Qdrant Cloud, None for local instance
   )
-
+  print("In connect_to_db", flush=True)
   db  = Qdrant(
-    client=client, collection_name=collection_name,
+    client=client,
+    collection_name=collection_name,
     embeddings=embeddings,
     distance_strategy= 'COSINE'
   )
+  print("Created db!!!!!!", flush=True)
   return db
 
 
