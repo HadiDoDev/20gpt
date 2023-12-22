@@ -90,17 +90,16 @@ class LANGCHAIN:
   def __call__(self, topic, message,dialog_messages, chatmode):
     print("In __call__, chatmode:", chatmode, flush=True)
     if chatmode in ['dini10']:
-      print("In dini10", flush=True)
       db = connect_to_vs(chatmode)
-      prompt = self._generate_prompt_messages(message, [], chatmode)
+      prompt = self._generate_prompt_messages(message, dialog_messages, chatmode)
       print("Prompt:", prompt, flush=True)
       chain = self._create_chain(prompt, self.llm, db)
-      print("Chain:", chain, flush=True)
-      with get_openai_callback() as cost:
-        print("OpenAPI Callback:", flush=True)
-        response = chain.invoke({'question':message}).content
-        print("Get Response:", flush=True)
-        in_tokens, out_tokens = cost.prompt_tokens, cost.completion_tokens
+      response = chain.invoke({'question':message}).content
+      # with get_openai_callback() as cost:
+      #   print("OpenAPI Callback:", flush=True)
+      #   response = chain.invoke({'question':message}).content
+      #   print("Get Response:", flush=True)
+      #   in_tokens, out_tokens = cost.prompt_tokens, cost.completion_tokens
       print("Response:", response, flush=True)
     # if topic=='dini10':
     #   print(message)
