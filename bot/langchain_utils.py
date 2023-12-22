@@ -97,6 +97,7 @@ class LANGCHAIN:
       print("Prompt:", prompt, flush=True)
       # chain = self._create_chain(prompt, self.llm, db)
       chain = (RunnableParallel({"context": itemgetter("question") | db.as_retriever(), 'question': RunnablePassthrough()}) | self.prompt | self.llm)
+      print("Message:", message, type(message), flush=True)
       response = chain.invoke({'question':message}).content
       # with get_openai_callback() as cost:
       #   print("OpenAPI Callback:", flush=True)
