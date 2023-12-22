@@ -32,6 +32,7 @@ def connect_to_vs(collection_name):
     distance_strategy= 'COSINE'
   )
   print("Created db!!!!!!", flush=True)
+  print("DB:", db.similarity_search("خدا و آخرت"), flush=True)
   return db
 
 
@@ -91,7 +92,6 @@ class LANGCHAIN:
     if chatmode in ['dini10']:
       print("In dini10", flush=True)
       db = connect_to_vs(chatmode)
-      print("DB:", db.similarity_search(message), flush=True)
       prompt = self._generate_prompt_messages(message, dialog_messages, chatmode)
       print("Prompt:", prompt, flush=True)
       chain = self._create_chain(prompt, self.llm, db)
