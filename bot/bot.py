@@ -434,6 +434,10 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
     n_input_tokens, n_output_tokens = 0, 0
     print("In Vision HANDLE!!!!!", image.name, image, '<=filename', flush=True)
 
+    import eboo_utils
+    filelink = f"http://51.89.156.250:8095/{image.file.name}"
+    added_file = eboo_utils.addfile(filelink)
+    converted_file = eboo_utils.convert(added_file['FileToDownload'])
     # try:
     # send placeholder message to user
     placeholder_message = await update.message.reply_text("...")
