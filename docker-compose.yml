@@ -1,5 +1,8 @@
 version: "3"
 
+volumes:
+  20gpt_bot_media_volume:
+
 services:
   20gpt_mongo:
     container_name: 20gpt_mongo
@@ -20,6 +23,8 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - 20gpt_mongo
+    volumes:
+      - 20gpt_bot_media_volume:/code/media
 
   20gpt_mongo_express:
     container_name: 20gpt_mongo_express
