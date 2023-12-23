@@ -63,7 +63,7 @@ class LANGCHAIN:
     vectorstore=vectorstore,
     k=2,)
     
-    # print(example_selector.select_examples({"input": "horse"}), flush=True)
+    print(example_selector.select_examples({"input":message}), flush=True)
 
     prompt = config.chat_modes[chat_mode]["prompt_start"]
     print("Prompt Type:", type(prompt), flush=True)
