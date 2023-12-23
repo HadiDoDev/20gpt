@@ -8,6 +8,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.llms import OpenAI
 from langchain.prompts import (
     ChatPromptTemplate,
+    FewShotChatMessagePromptTemplate,
     MessagesPlaceholder,
     SystemMessagePromptTemplate,
     HumanMessagePromptTemplate,
@@ -62,7 +63,7 @@ class LANGCHAIN:
     vectorstore=vectorstore,
     k=2,)
     
-    print(example_selector.select_examples({"input": "horse"}), flush=True)
+    # print(example_selector.select_examples({"input": "horse"}), flush=True)
 
     prompt = config.chat_modes[chat_mode]["prompt_start"]
     print("Prompt Type:", type(prompt), flush=True)
@@ -71,8 +72,16 @@ class LANGCHAIN:
         messages.append(("human", dialog_message["user"]))
         messages.append(("ai", dialog_message["bot"]))
         # messages.append({"role": "user", "content": message})
-
-    return ChatPromptTemplate.from_messages(messages)
+    few_shot_prompt = FewShotChatMessagePromptTemplate(
+        # The input variables select the values to pass to the example_selector
+        input_variables=["context", "question"],
+        example_selector=example_selector,
+        # Define how each example will be formatted.
+        # In this case, each example will become 2 messages:
+        # 1 human, and 1 AI
+        example_prompt=ChatPromptTemplate.from_messages(messages)
+    )
+    return few_shot_prompt
   
   @staticmethod
   def _create_chain(prompt, llm, db):
