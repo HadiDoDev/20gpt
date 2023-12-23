@@ -67,10 +67,10 @@ class LANGCHAIN:
     examples = example_selector.select_examples({"input":message})
     to_vectorize = [" ".join(['question: \n' + example['question'], 'answer: \n' + example['answer']]) for example in examples]
     prompt = config.chat_modes[chat_mode]["prompt_start"]
-    # prompt += 'as fewshot examples:\n'
-    # for example in to_vectorize:
-    #   prompt += example
-    # print("Prompt Type:", type(prompt), flush=True)
+    prompt += 'as fewshot examples:\n'
+    for example in to_vectorize:
+      prompt += example
+    print("Prompt Type:", type(prompt), flush=True)
     messages = [("system", prompt)]
     # for example in examples:
     #     messages.append(("human",example['question']))
