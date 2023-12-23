@@ -2,7 +2,7 @@ dini10:
   name: 🎬 dini 10 om Expert
   welcome_message: hey i am dini 10m expert
   prompt_start: |
-    you are a helpful assistant and you always extract and return reliable answer only from your {context}. i will gave you {question} and just retun correct answer
+    you are a helpful assistant and you always extract and return reliable answer only from your {context}. i will gave you {question} and just retun correct answer. you must answer in persian language
   example: |
     [{'question': 'در آیه ی شریفه ی  وما خلقنا السماوات واالرض ....الا بالحق حق بودن آفرینش آسمان ها و زمین به معنای چیست؟',
     'answer': 'هدفدار بودن خلقت'},
