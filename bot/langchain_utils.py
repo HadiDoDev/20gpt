@@ -37,7 +37,7 @@ import config
 #   print("DB:", db.similarity_search("خدا و آخرت"), flush=True)
 #   return db
 def connect_to_vs(collection_name):
-  path_to_vector_store = f"../vector_stors/{collection_name}" 
+  path_to_vector_store = f"./vector_stors/{collection_name}" 
   embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
   db = FAISS.load_local(path_to_vector_store, embeddings)
   print("Created db!!!!!!", flush=True)
