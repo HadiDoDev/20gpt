@@ -64,24 +64,31 @@ class LANGCHAIN:
     k=2,)
     
     print(example_selector.select_examples({"input":message}), flush=True)
-
+    examples = example_selector.select_examples({"input":message})
+    to_vectorize = [" ".join(['question: \n' + example['question'], 'answer: \n' + example['answer']]) for example in examples]
     prompt = config.chat_modes[chat_mode]["prompt_start"]
+    prompt += 'as fewshot examples:\n'
+    for example in to_vectorize:
+      prompt += example
     print("Prompt Type:", type(prompt), flush=True)
     messages = [("system", prompt)]
+    # for example in examples:
+    #     messages.append(("human",example['question']))
+    #     messages.append(("ai",example['answer']))
     for dialog_message in dialog_messages:
         messages.append(("human", dialog_message["user"]))
         messages.append(("ai", dialog_message["bot"]))
         # messages.append({"role": "user", "content": message})
-    few_shot_prompt = FewShotChatMessagePromptTemplate(
-        # The input variables select the values to pass to the example_selector
-        input_variables=["context", "question"],
-        example_selector=example_selector,
-        # Define how each example will be formatted.
-        # In this case, each example will become 2 messages:
-        # 1 human, and 1 AI
-        example_prompt=ChatPromptTemplate.from_messages(messages)
-    )
-    return few_shot_prompt
+    # few_shot_prompt = FewShotChatMessagePromptTemplate(
+    #     # The input variables select the values to pass to the example_selector
+    #     input_variables=["context", "question"],
+    #     example_selector=example_selector,
+    #     # Define how each example will be formatted.
+    #     # In this case, each example will become 2 messages:
+    #     # 1 human, and 1 AI
+    #     example_prompt=ChatPromptTemplate.from_messages(messages)
+    # )
+    return ChatPromptTemplate.from_messages(messages)
   
   @staticmethod
   def _create_chain(prompt, llm, db):
