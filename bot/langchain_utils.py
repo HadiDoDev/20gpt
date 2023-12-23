@@ -1,8 +1,9 @@
-openai_api_key = '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'
+# openai_api_key = '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'
+openai_api_key = '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'
 from operator import itemgetter
 from langchain.embeddings.openai import OpenAIEmbeddings
 from qdrant_client import QdrantClient,models
-from langchain.vectorstores import Qdrant
+from langchain.vectorstores import Qdrant, FAISS
 from langchain.chat_models import ChatOpenAI
 from langchain.llms import OpenAI
 from langchain.prompts import (
@@ -11,64 +12,43 @@ from langchain.prompts import (
     SystemMessagePromptTemplate,
     HumanMessagePromptTemplate,
 )
+
 from langchain.schema.runnable import RunnableParallel, RunnablePassthrough
 from langchain.callbacks import get_openai_callback
 import config
 
 
+# def connect_to_vs(collection_name):
+#   url="https://4b3ee481-41e3-470d-a80e-45ffb13d9c7d.us-east4-0.gcp.cloud.qdrant.io:6333"
+#   qdrant_api_key = 'wlxgWdvrsyuYbOQHkV3CcmnH33XFQZPxWjRXKsTAvocWouKU_uZ2jw'
+#   embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
+#   client = QdrantClient(
+#       url,
+#       api_key=qdrant_api_key, # For Qdrant Cloud, None for local instance
+#   )
+#   print("In connect_to_db", flush=True)
+#   db  = Qdrant(
+#     client=client,
+#     collection_name=collection_name,
+#     embeddings=embeddings,
+#     distance_strategy= 'COSINE'
+#   )
+#   print("Created db!!!!!!", flush=True)
+#   print("DB:", db.similarity_search("خدا و آخرت"), flush=True)
+#   return db
 def connect_to_vs(collection_name):
-  url="https://4b3ee481-41e3-470d-a80e-45ffb13d9c7d.us-east4-0.gcp.cloud.qdrant.io:6333"
-  qdrant_api_key = 'wlxgWdvrsyuYbOQHkV3CcmnH33XFQZPxWjRXKsTAvocWouKU_uZ2jw'
+  path_to_vector_store = f"../vector_stors/{collection_name}" 
   embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
-  client = QdrantClient(
-      url,
-      api_key=qdrant_api_key, # For Qdrant Cloud, None for local instance
-  )
-  print("In connect_to_db", flush=True)
-  db  = Qdrant(
-    client=client,
-    collection_name=collection_name,
-    embeddings=embeddings,
-    distance_strategy= 'COSINE'
-  )
+  db = FAISS.load_local(path_to_vector_store, embeddings)
   print("Created db!!!!!!", flush=True)
-  print("DB:", db.similarity_search("خدا و آخرت"), flush=True)
-  return db
+  print("DB:", db.similarity_search("اعمال ما تقدم وما تاخر را توضیح دهید"), flush=True)
 
+  return db
 
 class LANGCHAIN:
   def  __init__(self, model_name):
     self.llm = ChatOpenAI(openai_api_key=openai_api_key, model=model_name, max_tokens=1024)
-    print("In initializer!", flush=True)
-    # self.embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
-    # prompt = ChatPromptTemplate.from_messages([
-    #   ("system", "you are a helpful assistant and you always extract and return reliable answer only from your {context}.\
-    #    write at most 100 words in your output "), ("human", "{question}")
-    #   ])
-    # def connect_to_vs(collection_name):
-    #   url="https://4b3ee481-41e3-470d-a80e-45ffb13d9c7d.us-east4-0.gcp.cloud.qdrant.io:6333"
-    #   qdrant_api_key = 'wlxgWdvrsyuYbOQHkV3CcmnH33XFQZPxWjRXKsTAvocWouKU_uZ2jw'
-    #   embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
-    #   client = QdrantClient(
-    #       url,
-    #       api_key=qdrant_api_key, # For Qdrant Cloud, None for local instance
-    #   )
 
-    #   db  = Qdrant(
-    #     client=client, collection_name=collection_name,
-    #     embeddings=embeddings,
-    #     distance_strategy= 'COSINE'
-    #   )
-    #   return db
-    # db = connect_to_vs('dini10')
-    # self.db = db 
-    # # self.chain = (RunnableParallel({'context':db.as_retriever(),"question": RunnablePassthrough()}))|prompt|self.llm
-    prompt = ChatPromptTemplate.from_messages([("system", "you are a helpful assistant and you always extract and return reliable answer only from your {context}.\
-    i will gave you Multiple-choice questions and just retun correct ONE, NOTHING MORE"), ("human","{question}" )])
-    self.prompt = prompt
-    # self.chain = (RunnableParallel(
-    #   {"context": itemgetter("question") | db.as_retriever(),'question': RunnablePassthrough()}
-    #   ) | prompt |self.llm)
 
   @staticmethod
   def _generate_prompt_messages(message, dialog_messages, chat_mode):
