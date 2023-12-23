@@ -7,3 +7,4 @@ python-dotenv==0.21.0
 langchain==0.0.351
 qdrant-client==1.7.0
 pillow==10.1.0
+faiss-cpu==1.7.4
