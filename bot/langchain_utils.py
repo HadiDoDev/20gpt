@@ -12,6 +12,8 @@ from langchain.prompts import (
     SystemMessagePromptTemplate,
     HumanMessagePromptTemplate,
 )
+from langchain.prompts import SemanticSimilarityExampleSelector
+
 
 from langchain.schema.runnable import RunnableParallel, RunnablePassthrough
 from langchain.callbacks import get_openai_callback
@@ -52,6 +54,16 @@ class LANGCHAIN:
 
   @staticmethod
   def _generate_prompt_messages(message, dialog_messages, chat_mode):
+    path_to_vector_store = f"./vector_stors/{chat_mode}_examples" 
+    embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
+    vectorstore = FAISS.load_local(path_to_vector_store, embeddings)
+
+    example_selector = SemanticSimilarityExampleSelector(
+    vectorstore=vectorstore,
+    k=2,)
+    
+    print(example_selector.select_examples({"input": "horse"}), flush=True)
+
     prompt = config.chat_modes[chat_mode]["prompt_start"]
     print("Prompt Type:", type(prompt), flush=True)
     messages = [("system", prompt)]
