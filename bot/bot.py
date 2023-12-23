@@ -868,6 +868,5 @@ def run_bot() -> None:
     # start the bot
     application.run_polling()
 
-
 if __name__ == "__main__":
     run_bot()
