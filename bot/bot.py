@@ -826,10 +826,6 @@ async def show_balance_handle(update: Update, context: CallbackContext):
     db.set_user_attribute(user_id, "last_interaction", datetime.now())
     user_credit = db.get_user_attribute(user_id, "credit")
 
-    # count total usage statistics
-    total_n_spent_dollars = 0
-    total_n_used_tokens = 0
-
     details_text = "🏷️ Details:\n"
 
     total_rials = user_credit['total_rials'] - user_credit['used_rials']
@@ -838,7 +834,7 @@ async def show_balance_handle(update: Update, context: CallbackContext):
     text = f"You'r total credit: <b>{total_rials:.03f} Rials</b>\n"
     text += f"You'r available chat modes: <b>{user_credit['chat_modes']}</b> tokens\n\n"
     text += details_text
-
+    text += f"Is on trial mode: <b>{user_credit['is_trial']}</b>"
     await update.message.reply_text(text, parse_mode=ParseMode.HTML)
 
 async def edited_message_handle(update: Update, context: CallbackContext):

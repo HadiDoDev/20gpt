@@ -139,7 +139,7 @@ class Database:
 
     def check_if_user_has_credit(self, user_id: int, chat_mode : str, raise_exception: bool = True):
         credit = self.get_user_attribute(user_id, "credit")
-        is_trial = credit['trial']
+        is_trial = credit['is_trial']
         
         has_credit = credit['total_rials'] > credit['used_rials']
 
