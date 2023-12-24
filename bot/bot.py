@@ -445,6 +445,7 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
     added_image = eboo_utils.addfile(filelink)
     extracted_text = eboo_utils.convert(added_image['FileToken'])
 
+
     try:
         message = update.message.caption
 
@@ -458,7 +459,10 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
             extracted_text = f"{message}\n {extracted_text}"
         
         await context.bot.delete_message(chat_id=placeholder_message.chat_id, message_id=placeholder_message.message_id)
-        await message_handle(update, context, message=extracted_text)
+        langchain_instance = langchain_utils.LANGCHAIN("gpt-4-1106-preview")
+        question_list = langchain_instance.parse_text(extracted_text)
+        for question in question_list:
+            await message_handle(update, context, message=question)
 
         # dialog_messages = db.get_dialog_messages(user_id)
         # parse_mode = {"html": ParseMode.HTML, "markdown": ParseMode.MARKDOWN}[

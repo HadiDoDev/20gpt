@@ -14,7 +14,7 @@ from langchain.prompts import (
     HumanMessagePromptTemplate,
 )
 from langchain.prompts import SemanticSimilarityExampleSelector
-
+from langchain.chains import create_extraction_chain
 
 from langchain.schema.runnable import RunnableParallel, RunnablePassthrough
 from langchain.callbacks import get_openai_callback
@@ -65,7 +65,7 @@ class LANGCHAIN:
     
     print(example_selector.select_examples({"input":message}), flush=True)
     examples = example_selector.select_examples({"input":message})
-    to_vectorize = [" ".join(['question: \n' + example['question'], 'answer: \n' + example['answer']]) for example in examples]
+    # to_vectorize = [" ".join(['question: \n' + example['question'], 'answer: \n' + example['answer']]) for example in examples]
     prompt = config.chat_modes[chat_mode]["prompt_start"]
     # prompt += 'as fewshot examples:\n'
     # for example in to_vectorize:
@@ -120,3 +120,22 @@ class LANGCHAIN:
     n_first_dialog_messages_removed = 0
 
     return answer, n_input_tokens, n_output_tokens, n_first_dialog_messages_removed
+  def parse_text(self, text):
+    schema = {
+    "properties": {
+        " questions": {"type": "string"},
+    },
+    "required": ["question"]}
+    prompt = ChatPromptTemplate.from_messages([("system", """Assist me in structuring data from an OCR-processed exam paper. The {text} includes questions,
+                                                 each potentially with multiple propositions. The OCR might lack clear separation.
+          1. Identify and separate each question along with its propositions, keeping all parts together.
+          2. Preserve the original Persian language and question order from the OCR {text}.
+          3. Be aware of sub-questions; don't treat them as standalone questions.
+
+          Make reasonable assumptions for clarity, and thank you for your help.
+
+          """)])
+    chain = create_extraction_chain(schema, self.llm, prompt)
+    response = chain.invoke({'text':text})
+    final_answer = [response["question"] for item in response]
+    return final_answer
