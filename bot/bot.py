@@ -922,6 +922,7 @@ async def post_init(application: Application):
         BotCommand("/settings", "Show settings"),
         BotCommand("/help", "Show help message"),
         BotCommand("/startb", "Show subscriptions"),
+        BotCommand("/menu", "Show subscriptions"),
     ])
 
 
