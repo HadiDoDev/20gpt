@@ -245,7 +245,7 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
 
             # print(type(_message), _message, flush=True)
             langchain_instance=langchain_utils.LANGCHAIN(current_model)
-            answer, n_input_tokens, n_output_tokens, n_first_dialog_messages_removed = langchain_instance(_message, [], chat_mode)
+            answer, n_input_tokens, n_output_tokens, n_first_dialog_messages_removed, cost = langchain_instance(_message, [], chat_mode)
             
             # chatgpt_instance = openai_utils.ChatGPT(model=current_model)
             # if config.enable_message_streaming:
@@ -470,7 +470,8 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
     step_size = 500
     question_list = []
     for i in range(0, len(extracted_text), step_size):
-        question_list.extend(langchain_instance.parse_text(extracted_text[i:i+step_size]))
+        extracted_question, cost = langchain_instance.parse_text(extracted_text[i:i+step_size])
+        question_list.extend(extracted_question)
     
     print("Question List:", question_list, flush=True)
     for question in question_list:

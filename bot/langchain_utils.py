@@ -20,7 +20,8 @@ from langchain.schema.runnable import RunnableParallel, RunnablePassthrough
 from langchain.callbacks import get_openai_callback
 import config
 
-
+FACTOR = 10
+DOLLAR = 500000
 # def connect_to_vs(collection_name):
 #   url="https://4b3ee481-41e3-470d-a80e-45ffb13d9c7d.us-east4-0.gcp.cloud.qdrant.io:6333"
 #   qdrant_api_key = 'wlxgWdvrsyuYbOQHkV3CcmnH33XFQZPxWjRXKsTAvocWouKU_uZ2jw'
@@ -109,16 +110,18 @@ class LANGCHAIN:
       print("Prompt:", prompt, flush=True)
       chain = self._create_chain(prompt, self.llm, db)
       print("Message:", message, type(message), flush=True)
-      with get_openai_callback() as cost:
+      with get_openai_callback() as cb:
         print("OpenAPI Callback:", flush=True)
         answer = chain.invoke({'question':message}).content
         answer = self._postprocess_answer(answer)
         # print("Get Response:", flush=True)
-        n_input_tokens, n_output_tokens = cost.prompt_tokens, cost.completion_tokens
+        n_input_tokens, n_output_tokens, cost = cb.prompt_tokens, cb.completion_tokens, cb.total_cost
     else:
-      answer, n_input_tokens, n_output_tokens = None, 0, 0
+      answer, n_input_tokens, n_output_tokens, cost= None, 0, 0,0
     n_first_dialog_messages_removed = 0
-    return answer, n_input_tokens, n_output_tokens, n_first_dialog_messages_removed
+    return answer, n_input_tokens, n_output_tokens, n_first_dialog_messages_removed, cost* FACTOR * DOLLAR
+  
+
   def parse_text(self, text):
     schema = {
     "properties": {
@@ -135,6 +138,17 @@ class LANGCHAIN:
     4.always exclude 'exam header'
           """)])
     chain = create_extraction_chain(schema, self.llm, prompt)
-    response = chain.invoke({"text": str(text)})['text']
-    final_answer = [item["question"] for item in response]
-    return final_answer
+    try:
+      with get_openai_callback() as cb:
+          print("OpenAPI Callback:", flush=True)
+
+          response = chain.invoke({"text": str(text)})['text']
+          n_input_tokens, n_output_tokens, cost = cb.prompt_tokens, cb.completion_tokens, cb.total_cost
+      final_answer = [item["question"] for item in response]
+
+    except:
+      final_answer = [text]
+      cost = 0.001
+
+
+    return final_answer, cost* FACTOR * DOLLAR
