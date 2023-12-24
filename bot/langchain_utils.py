@@ -125,14 +125,14 @@ class LANGCHAIN:
         "question": {"type": "string"},
     },
     "required": ["question"]}
-    prompt = ChatPromptTemplate.from_messages([("system", """Assist me in structuring data from an OCR-processed exam paper. The {text} includes questions,
-                                                 each potentially with multiple propositions. The OCR might lack clear separation.
-          1. Identify and separate each question along with its propositions, keeping all parts together.
-          2. Preserve the original Persian language and question order from the OCR {text}.
-          3. Be aware of sub-questions; don't treat them as standalone questions.
+    prompt = ChatPromptTemplate.from_messages([("system", """Assist me in structuring data from an OCR-processed exam paper.
+    The {text} includes questions, each potentially with multiple propositions. The OCR might lack clear separation.
 
-          Make reasonable assumptions for clarity, and thank you for your help.
-
+    1. Identify and separate each question along with its statements, keeping all parts together.
+    2. Preserve the original Persian language and question order from the OCR {text}.
+    3. Be aware of sub-questions; don't treat them as standalone questions. 
+    Make reasonable assumptions for clarity, and thank you for your help.
+    4.always exclude 'exam header'
           """)])
     chain = create_extraction_chain(schema, self.llm, prompt)
     response = chain.invoke({"text": str(text)})['text']
