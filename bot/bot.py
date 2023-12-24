@@ -909,7 +909,7 @@ async def post_init(application: Application):
         BotCommand("/balance", "Show balance"),
         BotCommand("/settings", "Show settings"),
         BotCommand("/help", "Show help message"),
-        BotCommand("/startb", "Show subscriptions"),
+        # BotCommand("/startb", "Show subscriptions"),
     ])
 
 
@@ -957,8 +957,8 @@ def run_bot() -> None:
 
     application.add_error_handler(error_handle)
 
-    application.add_handler(CommandHandler("startb", startb, filters=user_filter))
-    application.add_handler(CallbackQueryHandler(button, filters=user_filter))
+    # application.add_handler(CommandHandler("startb", startb, filters=user_filter))
+    # application.add_handler(CallbackQueryHandler(button, filters=user_filter))
 
     # start the bot
     application.run_polling()
