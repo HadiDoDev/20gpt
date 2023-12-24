@@ -875,18 +875,18 @@ async def error_handle(update: Update, context: CallbackContext) -> None:
         await context.bot.send_message(update.effective_chat.id, "Some error in error handler")
 
 
-# async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-#     """Parses the CallbackQuery and updates the message text."""
-#     query = update.callback_query
+async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Parses the CallbackQuery and updates the message text."""
+    query = update.callback_query
 
-#     # CallbackQueries need to be answered, even if no notification to the user is needed
-#     # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
-#     await query.answer()
+    # CallbackQueries need to be answered, even if no notification to the user is needed
+    # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
+    await query.answer()
 
-#     await query.edit_message_text(text=f"Selected option: {query.data}")
+    await query.edit_message_text(text=f"Selected option: {query.data}")
 
 
-# async def startb(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def startb(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Sends a message with three inline buttons attached."""
     keyboard = [
         [
@@ -909,7 +909,7 @@ async def post_init(application: Application):
         BotCommand("/balance", "Show balance"),
         BotCommand("/settings", "Show settings"),
         BotCommand("/help", "Show help message"),
-        # BotCommand("/startb", "Show subscriptions"),
+        BotCommand("/startb", "Show subscriptions"),
     ])
 
 
@@ -957,8 +957,11 @@ def run_bot() -> None:
 
     application.add_error_handler(error_handle)
 
-    # application.add_handler(CommandHandler("startb", startb, filters=user_filter))
-    # application.add_handler(CallbackQueryHandler(button, filters=user_filter))
+    application.add_handler(CommandHandler("startb", startb, filters=user_filter))
+    application.add_handler(CallbackQueryHandler(button, filters=user_filter))
 
     # start the bot
     application.run_polling()
+
+if __name__ == "__main__":
+    run_bot()
