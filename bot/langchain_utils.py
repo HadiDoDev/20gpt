@@ -123,7 +123,7 @@ class LANGCHAIN:
   def parse_text(self, text):
     schema = {
     "properties": {
-        "questions": {"type": "string"},
+        "question": {"type": "string"},
     },
     "required": ["question"]}
     prompt = ChatPromptTemplate.from_messages([("system", """Assist me in structuring data from an OCR-processed exam paper. The {text} includes questions,
