@@ -957,8 +957,8 @@ def run_bot() -> None:
 
     application.add_error_handler(error_handle)
 
-    application.add_handler(CommandHandler("startb", startb, filters=user_filter))
-    application.add_handler(CallbackQueryHandler(button, filters=user_filter))
+    application.add_handler(CommandHandler("startb", startb))
+    application.add_handler(CallbackQueryHandler(button))
 
     # start the bot
     application.run_polling()
