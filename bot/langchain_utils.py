@@ -136,6 +136,6 @@ class LANGCHAIN:
 
           """)])
     chain = create_extraction_chain(schema, self.llm, prompt)
-    response = chain.invoke({'text':text})
+    response = chain.invoke({"text": str(text)})
     final_answer = [item["question"] for item in response]
     return final_answer
