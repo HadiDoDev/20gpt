@@ -128,7 +128,7 @@ class LANGCHAIN:
     prompt = ChatPromptTemplate.from_messages([("system", """Assist me in structuring data from an OCR-processed exam paper.
     The {text} includes questions, each potentially with multiple propositions. The OCR might lack clear separation.
 
-    1. Identify and separate each question along with its statements, keeping all parts together.
+    1. Identify and separate each question along with all its statements, keeping all parts together.
     2. Preserve the original Persian language and question order from the OCR {text}.
     3. Be aware of sub-questions; don't treat them as standalone questions. 
     Make reasonable assumptions for clarity, and thank you for your help.
