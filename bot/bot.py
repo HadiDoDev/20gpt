@@ -23,6 +23,7 @@ from telegram.ext import (
     Application,
     ApplicationBuilder,
     CallbackContext,
+    ContextTypes,
     CommandHandler,
     MessageHandler,
     CallbackQueryHandler,
@@ -822,6 +823,7 @@ async def _show_balance_handle(update: Update, context: CallbackContext):
 
     await update.message.reply_text(text, parse_mode=ParseMode.HTML)
 
+
 async def show_balance_handle(update: Update, context: CallbackContext):
     await register_user_if_not_exists(update, context, update.message.from_user)
 
@@ -839,6 +841,7 @@ async def show_balance_handle(update: Update, context: CallbackContext):
     text += details_text
     text += f"Is on trial mode: <b>{user_credit['is_trial']}</b>"
     await update.message.reply_text(text, parse_mode=ParseMode.HTML)
+
 
 async def edited_message_handle(update: Update, context: CallbackContext):
     if update.edited_message.chat.type == "private":
@@ -872,6 +875,44 @@ async def error_handle(update: Update, context: CallbackContext) -> None:
         await context.bot.send_message(update.effective_chat.id, "Some error in error handler")
 
 
+async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Parses the CallbackQuery and updates the message text."""
+    query = update.callback_query
+
+    # CallbackQueries need to be answered, even if no notification to the user is needed
+    # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
+    await query.answer()
+
+    await query.edit_message_text(text=f"Selected option: {query.data}")
+
+
+async def startb(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Sends a message with three inline buttons attached."""
+    keyboard = [
+        [
+            InlineKeyboardButton("Option 1", callback_data="1"),
+            InlineKeyboardButton("Option 2", callback_data="2"),
+        ],
+        [InlineKeyboardButton("Option 3", callback_data="3")],
+    ]
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    await update.message.reply_text("Please choose:", reply_markup=reply_markup)
+
+# تابع برای نمایش منوی کاربری
+async def user_menu(update: Update, context: CallbackContext) -> None:
+    user = update.message.from_user
+    await update.message.reply_text(f"سلام {user.first_name}! چه کاری برای شما انجام بدهم؟", reply_markup=get_user_menu_markup())
+
+# تابع برای ایجاد محتوای منوی کاربری
+def get_user_menu_markup():
+    return {
+        "keyboard": [["گزینه 1", "گزینه 2"], ["گزینه 3"]],
+        "resize_keyboard": True,
+        "one_time_keyboard": True
+    }
+
 async def post_init(application: Application):
     await application.bot.set_my_commands([
         BotCommand("/new", "Start new dialog"),
@@ -880,6 +921,8 @@ async def post_init(application: Application):
         BotCommand("/balance", "Show balance"),
         BotCommand("/settings", "Show settings"),
         BotCommand("/help", "Show help message"),
+        BotCommand("/startb", "Show subscriptions"),
+        BotCommand("/menu", "Show subscriptions"),
     ])
 
 
@@ -926,6 +969,10 @@ def run_bot() -> None:
     application.add_handler(CommandHandler("balance", show_balance_handle, filters=user_filter))
 
     application.add_error_handler(error_handle)
+
+    application.add_handler(CommandHandler("startb", startb))
+    application.add_handler(CallbackQueryHandler(button))
+    application.add_handler(CommandHandler("menu", user_menu))
 
     # start the bot
     application.run_polling()
