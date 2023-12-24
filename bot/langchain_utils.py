@@ -123,7 +123,7 @@ class LANGCHAIN:
   def parse_text(self, text):
     schema = {
     "properties": {
-        " questions": {"type": "string"},
+        "questions": {"type": "string"},
     },
     "required": ["question"]}
     prompt = ChatPromptTemplate.from_messages([("system", """Assist me in structuring data from an OCR-processed exam paper. The {text} includes questions,
@@ -137,5 +137,5 @@ class LANGCHAIN:
           """)])
     chain = create_extraction_chain(schema, self.llm, prompt)
     response = chain.invoke({'text':text})
-    final_answer = [response["question"] for item in response]
+    final_answer = [item["question"] for item in response]
     return final_answer
