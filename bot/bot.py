@@ -459,8 +459,11 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
             extracted_text = f"{message}\n {extracted_text}"
         
         await context.bot.delete_message(chat_id=placeholder_message.chat_id, message_id=placeholder_message.message_id)
+
         langchain_instance = langchain_utils.LANGCHAIN("gpt-4-1106-preview")
         question_list = langchain_instance.parse_text(extracted_text)
+        
+        print("Question List:", question_list, flush=True)
         for question in question_list:
             await message_handle(update, context, message=question)
 
