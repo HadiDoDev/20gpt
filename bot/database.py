@@ -139,11 +139,10 @@ class Database:
 
     def check_if_user_has_credit(self, user_id: int, chat_mode : str, raise_exception: bool = True):
         credit = self.get_user_attribute(user_id, "credit")
-        is_trial = credit['is_trial']
         
         has_credit = credit['total_rials'] > credit['used_rials']
 
-        if is_trial and has_credit and ['last_model_purchased'] is None:
+        if credit['is_trial'] and has_credit and credit['last_model_purchased'] is None:
             return True
         elif has_credit and chat_mode in credit['chat_modes']:
             return True
