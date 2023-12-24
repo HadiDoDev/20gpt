@@ -223,7 +223,7 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
 
         try:
             # Check user credit
-            await db.check_if_user_has_credit(user_id, chat_mode, raise_exception=True)
+            db.check_if_user_has_credit(user_id, chat_mode, raise_exception=True)
 
             # send placeholder message to user
             placeholder_message = await update.message.reply_text("...")
