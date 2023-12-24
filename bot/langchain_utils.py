@@ -55,16 +55,16 @@ class LANGCHAIN:
 
   @staticmethod
   def _generate_prompt_messages(message, dialog_messages, chat_mode):
-    path_to_vector_store = f"./vector_stors/{chat_mode}_examples" 
-    embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
-    vectorstore = FAISS.load_local(path_to_vector_store, embeddings)
+    # path_to_vector_store = f"./vector_stors/{chat_mode}_examples" 
+    # embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
+    # vectorstore = FAISS.load_local(path_to_vector_store, embeddings)
 
-    example_selector = SemanticSimilarityExampleSelector(
-    vectorstore=vectorstore,
-    k=2,)
+    # example_selector = SemanticSimilarityExampleSelector(
+    # vectorstore=vectorstore,
+    # k=2,)
     
-    print(example_selector.select_examples({"input":message}), flush=True)
-    examples = example_selector.select_examples({"input":message})
+    # print(example_selector.select_examples({"input":message}), flush=True)
+    # examples = example_selector.select_examples({"input":message})
     # to_vectorize = [" ".join(['question: \n' + example['question'], 'answer: \n' + example['answer']]) for example in examples]
     prompt = config.chat_modes[chat_mode]["prompt_start"]
     # prompt += 'as fewshot examples:\n'
