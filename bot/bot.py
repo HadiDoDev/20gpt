@@ -875,35 +875,67 @@ async def error_handle(update: Update, context: CallbackContext) -> None:
         await context.bot.send_message(update.effective_chat.id, "Some error in error handler")
 
 
-async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def purchase_button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Parses the CallbackQuery and updates the message text."""
     query = update.callback_query
 
     # CallbackQueries need to be answered, even if no notification to the user is needed
     # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
     await query.answer()
+    option = query.data
 
-    await query.edit_message_text(text=f"Selected option: {query.data}")
+    # ارسال پست با تصویر، لینک و متن
+    if option == 'dini8':
+        caption = "دینی پایه هشتم"
+        photo_url = "static/photos/dini.jpg"
+        link_url = "https://google.com"
+    elif option == 'dini9':
+        caption = "دینی پایه نهم"
+        photo_url = "static/photos/dini.jpg"
+        link_url = "https://google.com"
+    elif option == 'dini10':
+        caption = "دینی پایه دهم"
+        photo_url = "static/photos/dini.jpg"
+        link_url = "https://google.com"
+    elif option == 'dastoorzabaan11':
+        caption = "دستور زبان پایه یازدهم"
+        photo_url = "static/photos/dastoorzabaan.jpg"
+        link_url = "https://google.com"
+    else:
+        # اگر گزینه معتبر نباشد، هیچکاری انجام نده
+        return
 
-
-async def startb(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Sends a message with three inline buttons attached."""
     keyboard = [
-        [
-            InlineKeyboardButton("Option 1", callback_data="1"),
-            InlineKeyboardButton("Option 2", callback_data="2"),
-        ],
-        [InlineKeyboardButton("Option 3", callback_data="3")],
+        [InlineKeyboardButton("بازکردن لینک", url=link_url)],
     ]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    await update.message.reply_text("Please choose:", reply_markup=reply_markup)
+    with open(photo_url, 'rb') as photo_file:
+        await query.message.reply_photo(photo=photo_file, caption=caption, reply_markup=reply_markup)
+
+
+async def purchase(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Sends a message with three inline buttons attached."""
+    keyboard = [
+        [
+            InlineKeyboardButton("دینی: هشتم", callback_data="dini8"),
+            InlineKeyboardButton("دینی: نهم", callback_data="dini9"),
+            InlineKeyboardButton("دینی: دهم", callback_data="dini10"),
+        ],
+        [InlineKeyboardButton("دستور زبان فارسی: یازدهم", callback_data="dastoorzabaan11")],
+    ]
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    await update.message.reply_text("لطفا گزینه درس مورد نظر خود را برای خرید انتخاب کنید:", reply_markup=reply_markup)
+
 
 # تابع برای نمایش منوی کاربری
 async def user_menu(update: Update, context: CallbackContext) -> None:
     user = update.message.from_user
     await update.message.reply_text(f"سلام {user.first_name}! چه کاری برای شما انجام بدهم؟", reply_markup=get_user_menu_markup())
+
 
 # تابع برای ایجاد محتوای منوی کاربری
 def get_user_menu_markup():
@@ -970,8 +1002,9 @@ def run_bot() -> None:
 
     application.add_error_handler(error_handle)
 
-    application.add_handler(CommandHandler("startb", startb))
-    application.add_handler(CallbackQueryHandler(button))
+    application.add_handler(CommandHandler("purchase", purchase))
+    application.add_handler(CallbackQueryHandler(purchase_button))
+
     application.add_handler(CommandHandler("menu", user_menu))
 
     # start the bot
