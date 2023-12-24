@@ -23,6 +23,7 @@ from telegram.ext import (
     Application,
     ApplicationBuilder,
     CallbackContext,
+    ContextTypes,
     CommandHandler,
     MessageHandler,
     CallbackQueryHandler,
@@ -874,7 +875,7 @@ async def error_handle(update: Update, context: CallbackContext) -> None:
         await context.bot.send_message(update.effective_chat.id, "Some error in error handler")
 
 
-async def button(update: Update, context: CallbackContext) -> None:
+async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Parses the CallbackQuery and updates the message text."""
     query = update.callback_query
 
@@ -885,7 +886,7 @@ async def button(update: Update, context: CallbackContext) -> None:
     await query.edit_message_text(text=f"Selected option: {query.data}")
 
 
-async def startb(update: Update, context: CallbackContext) -> None:
+async def startb(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Sends a message with three inline buttons attached."""
     keyboard = [
         [
@@ -956,8 +957,8 @@ def run_bot() -> None:
 
     application.add_error_handler(error_handle)
 
-    application.add_handler(CommandHandler("startb", startb))
-    application.add_handler(CallbackQueryHandler(button))
+    application.add_handler(CommandHandler("startb", startb, filters=user_filter))
+    application.add_handler(CallbackQueryHandler(button, filters=user_filter))
 
     # start the bot
     application.run_polling()
