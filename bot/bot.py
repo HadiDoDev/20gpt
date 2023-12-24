@@ -465,6 +465,8 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
     
     print("Question List:", question_list, flush=True)
     for question in question_list:
+        placeholder_message = await update.message.reply_text(question)
+
         await message_handle(update, context, message=question)
 
     # dialog_messages = db.get_dialog_messages(user_id)
