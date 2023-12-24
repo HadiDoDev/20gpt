@@ -117,8 +117,7 @@ class LANGCHAIN:
         n_input_tokens, n_output_tokens = cost.prompt_tokens, cost.completion_tokens
     else:
       answer, n_input_tokens, n_output_tokens = None, 0, 0
-      n_first_dialog_messages_removed = 0
-
+    n_first_dialog_messages_removed = 0
     return answer, n_input_tokens, n_output_tokens, n_first_dialog_messages_removed
   def parse_text(self, text):
     schema = {
