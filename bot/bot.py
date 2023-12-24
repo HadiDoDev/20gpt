@@ -205,9 +205,6 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
     user_id = update.message.from_user.id
     chat_mode = db.get_user_attribute(user_id, "current_chat_mode")
 
-    # Check user credit
-    db.check_if_user_has_credit(user_id, chat_mode)
-
     if chat_mode == "artist":
         await generate_image_handle(update, context, message=message)
         return
@@ -225,6 +222,9 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
         current_model = db.get_user_attribute(user_id, "current_model")
 
         try:
+            # Check user credit
+            await db.check_if_user_has_credit(user_id, chat_mode, raise_exception=True)
+
             # send placeholder message to user
             placeholder_message = await update.message.reply_text("...")
 
@@ -297,7 +297,9 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
             )
 
             db.update_n_used_tokens(user_id, current_model, n_input_tokens, n_output_tokens)
-            db.decrease_user_credit(user_id, 100.0)
+
+            # Update n Used Rials of User
+            db.decrease_user_credit(user_id, 10000.0)
 
         except asyncio.CancelledError:
             # note: intermediate token updates only work when enable_message_streaming=True (config.yml)
@@ -832,7 +834,7 @@ async def show_balance_handle(update: Update, context: CallbackContext):
 
 
     text = f"You'r total credit: <b>{total_rials:.03f} Rials</b>\n"
-    text += f"You'r available chat modes: <b>{user_credit['chat_modes']}</b> tokens\n\n"
+    text += f"You'r available chat modes: <b>{user_credit['chat_modes']}</b>\n\n"
     text += details_text
     text += f"Is on trial mode: <b>{user_credit['is_trial']}</b>"
     await update.message.reply_text(text, parse_mode=ParseMode.HTML)
