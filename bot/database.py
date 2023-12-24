@@ -48,7 +48,17 @@ class Database:
             "current_model": config.models["available_text_models"][0],
 
             "n_used_tokens": {},
-
+            
+            "credit": {
+                "is_trial": True,
+                "used_rials": 0.0,
+                "total_rials": 50000.0,
+                "chat_modes": [],
+                "increased_at": None,
+                "decreased_at": None,
+                "last_model_purchased": None
+            },
+            
             "n_generated_images": 0,
             "n_transcribed_seconds": 0.0  # voice message transcription
         }
@@ -126,3 +136,26 @@ class Database:
             {"_id": dialog_id, "user_id": user_id},
             {"$set": {"messages": dialog_messages}}
         )
+
+    def check_if_user_has_credit(self, user_id: int, chat_mode : str, raise_exception: bool = True):
+        credit = self.get_user_attribute(user_id, "credit")
+        is_trial = credit['trial']
+        
+        has_credit = credit['total_rials'] > credit['used_rials']
+
+        if is_trial and has_credit and ['last_model_purchased'] is None:
+            return True
+        elif has_credit and chat_mode in credit['chat_modes']:
+            return True
+        else:
+            if raise_exception:
+                raise ValueError(f"User {user_id} does not have credit or chat mode.")
+            else:
+                return False
+
+    def decrease_user_credit(self, user_id: int, n_used_rials: float):
+        user_credit = self.get_user_attribute(user_id, "credit")
+        user_credit['used_rials'] += n_used_rials
+        user_credit['decreased_at'] = datetime.now()
+
+        self.set_user_attribute(user_id, "credit", user_credit)

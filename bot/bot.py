@@ -205,6 +205,9 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
     user_id = update.message.from_user.id
     chat_mode = db.get_user_attribute(user_id, "current_chat_mode")
 
+    # Check user credit
+    db.check_if_user_has_credit(user_id, chat_mode)
+
     if chat_mode == "artist":
         await generate_image_handle(update, context, message=message)
         return
@@ -294,6 +297,7 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
             )
 
             db.update_n_used_tokens(user_id, current_model, n_input_tokens, n_output_tokens)
+            db.decrease_user_credit(user_id, 100.0)
 
         except asyncio.CancelledError:
             # note: intermediate token updates only work when enable_message_streaming=True (config.yml)
@@ -769,7 +773,7 @@ async def set_settings_handle(update: Update, context: CallbackContext):
             pass
 
 
-async def show_balance_handle(update: Update, context: CallbackContext):
+async def _show_balance_handle(update: Update, context: CallbackContext):
     await register_user_if_not_exists(update, context, update.message.from_user)
 
     user_id = update.message.from_user.id
@@ -815,6 +819,27 @@ async def show_balance_handle(update: Update, context: CallbackContext):
 
     await update.message.reply_text(text, parse_mode=ParseMode.HTML)
 
+async def show_balance_handle(update: Update, context: CallbackContext):
+    await register_user_if_not_exists(update, context, update.message.from_user)
+
+    user_id = update.message.from_user.id
+    db.set_user_attribute(user_id, "last_interaction", datetime.now())
+    user_credit = db.get_user_attribute(user_id, "credit")
+
+    # count total usage statistics
+    total_n_spent_dollars = 0
+    total_n_used_tokens = 0
+
+    details_text = "🏷️ Details:\n"
+
+    total_rials = user_credit['total_rials'] - user_credit['used_rials']
+
+
+    text = f"You'r total credit: <b>{total_rials:.03f} Rials</b>\n"
+    text += f"You'r available chat modes: <b>{user_credit['chat_modes']}</b> tokens\n\n"
+    text += details_text
+
+    await update.message.reply_text(text, parse_mode=ParseMode.HTML)
 
 async def edited_message_handle(update: Update, context: CallbackContext):
     if update.edited_message.chat.type == "private":
