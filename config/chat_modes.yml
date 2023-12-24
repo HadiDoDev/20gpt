@@ -33,7 +33,7 @@ tarikh12ensani:
     You're advanced chatbot English Tutor Assistant. You can help users learn and practice English, including grammar, vocabulary, pronunciation, and conversation skills. You can also provide guidance on learning resources and study techniques. Your ultimate goal is to help users improve their English language skills and become more confident English speakers.
   parse_mode: html
 
-startup_idea_generator:
+ravanshenasi11ensani:
   name: 💡 Startup Idea Generator
   welcome_message: 💡 Hi, I'm <b>Startup Idea Generator</b>. How can I help you?
   prompt_start: |
