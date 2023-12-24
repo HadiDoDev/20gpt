@@ -900,6 +900,18 @@ async def startb(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     await update.message.reply_text("Please choose:", reply_markup=reply_markup)
 
+# تابع برای نمایش منوی کاربری
+async def user_menu(update: Update, context: CallbackContext) -> None:
+    user = update.message.from_user
+    await update.message.reply_text(f"سلام {user.first_name}! چه کاری برای شما انجام بدهم؟", reply_markup=get_user_menu_markup())
+
+# تابع برای ایجاد محتوای منوی کاربری
+def get_user_menu_markup():
+    return {
+        "keyboard": [["گزینه 1", "گزینه 2"], ["گزینه 3"]],
+        "resize_keyboard": True,
+        "one_time_keyboard": True
+    }
 
 async def post_init(application: Application):
     await application.bot.set_my_commands([
@@ -959,6 +971,7 @@ def run_bot() -> None:
 
     application.add_handler(CommandHandler("startb", startb))
     application.add_handler(CallbackQueryHandler(button))
+    application.add_handler(CommandHandler("menu", user_menu))
 
     # start the bot
     application.run_polling()
