@@ -906,7 +906,7 @@ async def purchase_button(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         return
 
     keyboard = [
-        [InlineKeyboardButton("بازکردن لینک", url=link_url)],
+        [InlineKeyboardButton("بازکردن لینک و خرید", url=link_url)],
     ]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
