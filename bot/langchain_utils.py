@@ -20,7 +20,7 @@ from langchain.schema.runnable import RunnableParallel, RunnablePassthrough
 from langchain.callbacks import get_openai_callback
 import config
 
-FACTOR = 10
+FACTOR = 2
 DOLLAR = 500000
 # def connect_to_vs(collection_name):
 #   url="https://4b3ee481-41e3-470d-a80e-45ffb13d9c7d.us-east4-0.gcp.cloud.qdrant.io:6333"
@@ -160,4 +160,4 @@ class LANGCHAIN:
       cost = 0.001
 
 
-    return final_answer, cost* FACTOR * DOLLAR
+    return final_answer, cost * FACTOR * DOLLAR
