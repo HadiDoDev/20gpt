@@ -46,16 +46,16 @@ user_semaphores = {}
 user_tasks = {}
 
 HELP_MESSAGE = """کلیدهای میانبر:
-⚪ /retry – Regenerate last bot answer
-⚪ /new – آغاز گفت و گوی جدید
-⚪ /mode – درس مورد نظر را انتخاب کنید
-⚪ /balance – Show balance
-⚪ /help – راهنما
+⚪ /new – آغاز گفتگو جدید
+⚪ /retry – تولید دوباره آخرین پاسخ
+⚪ /mode – انتخاب درس
 ⚪ /purchase – خرید
+⚪ /balance – نمایش اعتبار
+⚪ /help – راهنما
 قبل از پرسیدن سوال، مطمئن شوید که درس مورد نظر را به درستی انتخاب کرده باشید
  سوال خود را کامل بپرسید
- میتوانید سوال خود را تایپ کنید، وویس بفرستید و یا عکس نمونهسوال خود را بفرستید
- برای دریافت پاسخ صبر کنید به دلیل پیام های زیاد ممکن است کمی طول بکشد
+ میتوانید سوال خود را تایپ کنید، وویس بفرستید و یا عکس نمونه سوال خود را ارسال کنید
+ برای دریافت پاسخ خود صبر کنید، به دلیل دریافت پیام های زیاد ممکن است کمی طول بکشد
 """
 
 HELP_GROUP_CHAT_MESSAGE = """You can add bot to any <b>group chat</b> to help and entertain its participants!
@@ -300,7 +300,7 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
             db.update_n_used_tokens(user_id, current_model, n_input_tokens, n_output_tokens)
 
             # Update n Used Rials of User
-            db.decrease_user_credit(user_id, 10000.0)
+            db.decrease_user_credit(user_id, cost)
 
         except asyncio.CancelledError:
             # note: intermediate token updates only work when enable_message_streaming=True (config.yml)
@@ -435,15 +435,12 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
     image.write(buf.read())
     image.close()
 
-    # If you want to specify a different format (e.g., PNG), you can do so:
-    # image.save("path/to/save/image.png", format="PNG")
-
     # in case of CancelledError
-    n_input_tokens, n_output_tokens = 0, 0
+    # n_input_tokens, n_output_tokens = 0, 0
     print("In Vision HANDLE!!!!!", image.name, image, '<=filename', flush=True)
 
     # send placeholder message to user
-    placeholder_message = await update.message.reply_text("درحال جستجو در اسناد...")
+    placeholder_message = await update.message.reply_text("درحال تبدیل عکس به متن...")
 
     # send typing action
     await update.message.chat.send_action(action="typing")
@@ -451,6 +448,10 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
     filelink = f"http://51.89.156.250:8095/{image.name.split('/')[-1]}"
     added_image = eboo_utils.addfile(filelink)
     extracted_text = eboo_utils.convert(added_image['FileToken'])
+
+    # Edit placeholder message
+    placeholder_message = await context.bot.edit_message_text("درحال استخراج سوال از متن و ارسال پاسخ، لطفا تا دریافت کامل اطلاعات صبر کنید...",
+                                                              chat_id=placeholder_message.chat_id, message_id=placeholder_message.message_id)
 
 
     # try:
@@ -465,7 +466,7 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
     if message:
         extracted_text = f"{message}\n {extracted_text}"
     
-    await context.bot.delete_message(chat_id=placeholder_message.chat_id, message_id=placeholder_message.message_id)
+    
 
     langchain_instance = langchain_utils.LANGCHAIN("gpt-4-0613")
     step_size = 500
@@ -473,8 +474,14 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
     for i in range(0, len(extracted_text), step_size):
         extracted_question, cost = langchain_instance.parse_text(extracted_text[i:i+step_size])
         question_list.extend(extracted_question)
-    
-    print("Question List:", question_list, flush=True)
+
+        # Update used_rials user attr.
+        db.decrease_user_credit(user_id, cost)
+
+    # Delete placeholder message
+    await context.bot.delete_message(chat_id=placeholder_message.chat_id, message_id=placeholder_message.message_id)
+
+    # print("Question List:", question_list, flush=True)
     for question in question_list:
         placeholder_message = await update.message.reply_text(question)
         # await update.message.chat.send_action(action="typing")

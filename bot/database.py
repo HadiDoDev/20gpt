@@ -148,7 +148,7 @@ class Database:
             return True
         else:
             if raise_exception:
-                raise ValueError(f"User {user_id} does not have credit or chat mode.")
+                raise ValueError(f"شما اعتبار کافی برای ادامه فرایند را ندارید لطفا با استفاده از منو و گزینه /purchase اقدام به خرید بسته و افزایش اعتبار خود کنید.")
             else:
                 return False
 

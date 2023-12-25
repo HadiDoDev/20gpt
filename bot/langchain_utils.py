@@ -8,12 +8,12 @@ from langchain.chat_models import ChatOpenAI
 from langchain.llms import OpenAI
 from langchain.prompts import (
     ChatPromptTemplate,
-    FewShotChatMessagePromptTemplate,
-    MessagesPlaceholder,
-    SystemMessagePromptTemplate,
-    HumanMessagePromptTemplate,
+    # FewShotChatMessagePromptTemplate,
+    # MessagesPlaceholder,
+    # SystemMessagePromptTemplate,
+    # HumanMessagePromptTemplate,
 )
-from langchain.prompts import SemanticSimilarityExampleSelector
+# from langchain.prompts import SemanticSimilarityExampleSelector
 from langchain.chains import create_extraction_chain
 
 from langchain.schema.runnable import RunnableParallel, RunnablePassthrough
@@ -40,12 +40,13 @@ DOLLAR = 500000
 #   print("Created db!!!!!!", flush=True)
 #   print("DB:", db.similarity_search("خدا و آخرت"), flush=True)
 #   return db
+
 def connect_to_vs(collection_name):
   path_to_vector_store = f"./vector_stors/{collection_name}" 
   embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
   db = FAISS.load_local(path_to_vector_store, embeddings)
   print("Created db!!!!!!", flush=True)
-  print("DB:", db.similarity_search("اعمال ما تقدم وما تاخر را توضیح دهید"), flush=True)
+  # print("DB:", db.similarity_search("اعمال ما تقدم وما تاخر را توضیح دهید"), flush=True)
 
   return db
 
@@ -99,6 +100,7 @@ class LANGCHAIN:
       {"context": itemgetter("question") | db.as_retriever(), 'question': RunnablePassthrough()}
       ) | prompt | llm)
     return chain
+  
   @staticmethod
   def _postprocess_answer(answer):
     answer = answer.strip()
