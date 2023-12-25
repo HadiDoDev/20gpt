@@ -178,8 +178,8 @@ class Database:
                 raise ValueError(f"Invalid chat modes. {chat_modes}")
             
             user_credit['chat_modes'].extend(chat_modes)
-            user_credit['latest_chat_modes_added'].extend(chat_modes)
-        
+            user_credit['chat_modes'] = list(set(user_credit['chat_modes']))
+            user_credit['latest_chat_modes_added'] = chat_modes
+
         if chat_modes or n_total_rials:
-                
             self.set_user_attribute(user_id, "credit", user_credit)
