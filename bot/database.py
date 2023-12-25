@@ -4,7 +4,7 @@ import pymongo
 import uuid
 from datetime import datetime
 
-import config
+import configs
 
 
 class Database:
@@ -12,7 +12,7 @@ class Database:
         if mongodb_uri:
             self.client =  pymongo.MongoClient(mongodb_uri)
         else:
-            self.client = pymongo.MongoClient(config.mongodb_uri)
+            self.client = pymongo.MongoClient(configs.mongodb_uri)
         self.db = self.client["20gpt_bot"]
 
         self.user_collection = self.db["user"]
@@ -48,7 +48,7 @@ class Database:
 
             "current_dialog_id": None,
             "current_chat_mode": "assistant",
-            "current_model": config.models["available_text_models"][0],
+            "current_model": configs.models["available_text_models"][0],
 
             "n_used_tokens": {},
             
@@ -174,7 +174,7 @@ class Database:
             user_credit['total_rials'] += n_total_rials
         
         if chat_modes:
-            if not all(chat_mode in list(config.chat_modes.keys()) for chat_mode in chat_modes):
+            if not all(chat_mode in list(configs.chat_modes.keys()) for chat_mode in chat_modes):
                 raise ValueError(f"Invalid chat modes. {chat_modes}")
             
             user_credit['chat_modes'].extends(chat_modes)
