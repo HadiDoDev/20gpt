@@ -1,8 +1,6 @@
 import os
 
-abspath = os.path.abspath(__file__ / "../")
-dname = os.path.dirname(abspath)
-os.chdir(dname)
+os.chdir(os.path.dirname(os.path.abspath(__file__)) + "/../")
 
 import argparse
 from bot import database, config
