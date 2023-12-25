@@ -947,16 +947,16 @@ def get_user_menu_markup():
 
 async def post_init(application: Application):
     await application.bot.set_my_commands([
-        BotCommand("/new", "Start new dialog"),
-        BotCommand("/mode", "Select chat mode"),
-        BotCommand("/retry", "Re-generate response for previous query"),
-        BotCommand("/balance", "Show balance"),
-        BotCommand("/settings", "Show settings"),
+        BotCommand("/new", "گفت و گوی جدید"),
+        BotCommand("/mode", "انتخاب درس"),
+        BotCommand("/retry", "تکرار پاسخ  سوال قبلی"),
         BotCommand("/help", "راهنما"),
-        BotCommand("/purchase", "Show subscriptions"),
-        BotCommand("/menu", "Show subscriptions"),
+        BotCommand("/purchase", "خرید اعتبار دروس"),
     ])
 
+        # BotCommand("/settings", "Show settings"),
+        # BotCommand("/balance", "Show balance"),
+        # BotCommand("/menu", "Show subscriptions"),
 
 def run_bot() -> None:
     application = (
