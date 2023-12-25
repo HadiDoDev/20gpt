@@ -10,7 +10,7 @@ import database
 parser = argparse.ArgumentParser(description='Script so useful to increase user credit.')
 parser.add_argument("--user_id", type=int)
 parser.add_argument("--total_rials", type=int)
-parser.add_argument("--chat_modes", type=list)
+parser.add_argument("-l", "--chat_modes", nargs='+')
 
 args = parser.parse_args()
 
