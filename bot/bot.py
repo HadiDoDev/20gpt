@@ -47,11 +47,11 @@ user_tasks = {}
 
 HELP_MESSAGE = """Commands:
 ⚪ /retry – Regenerate last bot answer
-⚪ /new – Start new dialog
-⚪ /mode – Select chat mode
-⚪ /settings – Show settings
+⚪ /new – آغاز گفت و گوی جدید
+⚪ /mode – درس مورد نظر را انتخاب کنید
 ⚪ /balance – Show balance
-⚪ /help – Show help
+⚪ /help – راهنما
+⚪ /purchase – خرید
 
 🎨 Generate images from text prompts in <b>👩‍🎨 Artist</b> /mode
 👥 Add bot to <b>group chat</b>: /help_group_chat
@@ -245,7 +245,7 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
             }[config.chat_modes[chat_mode]["parse_mode"]]
 
             # print(type(_message), _message, flush=True)
-            langchain_instance=langchain_utils.LANGCHAIN(current_model)
+            langchain_instance=langchain_utils.LANGCHAIN("gpt-4-1106-preview")
             answer, n_input_tokens, n_output_tokens, n_first_dialog_messages_removed, cost = langchain_instance(_message, [], chat_mode)
             
             # chatgpt_instance = openai_utils.ChatGPT(model=current_model)
