@@ -1,12 +1,11 @@
 import os
 
-abspath = os.path.abspath(__file__)
+abspath = os.path.abspath(__file__ / "../")
 dname = os.path.dirname(abspath)
 os.chdir(dname)
 
 import argparse
-from ..bot import database
-from ..bot import config
+from bot import database, config
 
 parser = argparse.ArgumentParser(description='Script so useful to increase user credit.')
 parser.add_argument("--user_id", type=int)
