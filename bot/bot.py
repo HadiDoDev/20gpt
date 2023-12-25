@@ -300,6 +300,7 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
             db.update_n_used_tokens(user_id, current_model, n_input_tokens, n_output_tokens)
 
             # Update n Used Rials of User
+            print("COSTTTTTTTTTTTT:", cost, flush=True)
             db.decrease_user_credit(user_id, cost)
 
         except asyncio.CancelledError:

@@ -55,8 +55,7 @@ class Database:
                 "total_rials": 50000.0,
                 "chat_modes": [],
                 "increased_at": None,
-                "decreased_at": None,
-                "last_model_purchased": None
+                "decreased_at": None
             },
             
             "n_generated_images": 0,
@@ -142,7 +141,7 @@ class Database:
         
         has_credit = credit['total_rials'] > credit['used_rials']
 
-        if credit['is_trial'] and has_credit and credit['last_model_purchased'] is None:
+        if credit['is_trial'] and has_credit:
             return True
         elif has_credit and chat_mode in credit['chat_modes']:
             return True
