@@ -1,13 +1,13 @@
-import config
+import configs
 from io import BytesIO
 import tiktoken
 import openai
 
 
 # setup openai
-openai.api_key = config.openai_api_key
-if config.openai_api_base is not None:
-    openai.api_base = config.openai_api_base
+openai.api_key = configs.openai_api_key
+if configs.openai_api_base is not None:
+    openai.api_base = configs.openai_api_base
 
 
 OPENAI_COMPLETION_OPTIONS = {
@@ -26,7 +26,7 @@ class ChatGPT:
         self.model = model
 
     async def send_message(self, message, dialog_messages=[], chat_mode="assistant"):
-        if chat_mode not in config.chat_modes.keys():
+        if chat_mode not in configs.chat_modes.keys():
             raise ValueError(f"Chat mode {chat_mode} is not supported")
 
         n_dialog_messages_before = len(dialog_messages)
@@ -66,7 +66,7 @@ class ChatGPT:
         return answer, (n_input_tokens, n_output_tokens), n_first_dialog_messages_removed
 
     async def send_message_stream(self, message, dialog_messages=[], chat_mode="assistant"):
-        if chat_mode not in config.chat_modes.keys():
+        if chat_mode not in configs.chat_modes.keys():
             raise ValueError(f"Chat mode {chat_mode} is not supported")
 
         n_dialog_messages_before = len(dialog_messages)
@@ -219,7 +219,7 @@ class ChatGPT:
         ), n_first_dialog_messages_removed
 
     def _generate_prompt(self, message, dialog_messages, chat_mode):
-        prompt = config.chat_modes[chat_mode]["prompt_start"]
+        prompt = configs.chat_modes[chat_mode]["prompt_start"]
         prompt += "\n\n"
 
         # add chat context
@@ -236,7 +236,7 @@ class ChatGPT:
         return prompt
 
     def _generate_prompt_messages(self, message, dialog_messages, chat_mode):
-        prompt = config.chat_modes[chat_mode]["prompt_start"]
+        prompt = configs.chat_modes[chat_mode]["prompt_start"]
         print("PROMPT:", prompt, flush=True)
         messages = [{"role": "system", "content": prompt}]
         for dialog_message in dialog_messages:

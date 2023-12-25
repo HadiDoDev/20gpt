@@ -18,7 +18,7 @@ from langchain.chains import create_extraction_chain
 
 from langchain.schema.runnable import RunnableParallel, RunnablePassthrough
 from langchain.callbacks import get_openai_callback
-import config
+# import configs
 
 FACTOR = 2
 DOLLAR = 500000
@@ -70,7 +70,7 @@ class LANGCHAIN:
     # print(example_selector.select_examples({"input":message}), flush=True)
     # examples = example_selector.select_examples({"input":message})
     # to_vectorize = [" ".join(['question: \n' + example['question'], 'answer: \n' + example['answer']]) for example in examples]
-    # prompt = config.chat_modes[chat_mode]["prompt_start"]
+    # prompt = configs.chat_modes[chat_mode]["prompt_start"]
     # prompt += 'as fewshot examples:\n'
     # for example in to_vectorize:
     #   prompt += example
