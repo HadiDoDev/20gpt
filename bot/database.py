@@ -177,8 +177,8 @@ class Database:
             if not all(chat_mode in list(configs.chat_modes.keys()) for chat_mode in chat_modes):
                 raise ValueError(f"Invalid chat modes. {chat_modes}")
             
-            user_credit['chat_modes'].extends(chat_modes)
-            user_credit['latest_chat_modes_added'].extends(chat_modes)
+            user_credit['chat_modes'].extend(chat_modes)
+            user_credit['latest_chat_modes_added'].extend(chat_modes)
         
         if chat_modes or n_total_rials:
                 
