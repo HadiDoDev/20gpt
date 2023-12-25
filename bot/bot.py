@@ -925,11 +925,11 @@ async def purchase_button(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
 async def purchase(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Sends a message with three inline buttons attached."""
     keyboard = [
-        [
-            InlineKeyboardButton("🥉 برنزی: یک درس", callback_data="bronze"),
-            InlineKeyboardButton("🥈 نقره ای: سه درس", callback_data="silver"),
-        ],
         [InlineKeyboardButton("🥇 طلایی: همه دروس", callback_data="gold")],
+        [
+            InlineKeyboardButton("🥈 نقره ای: سه درس", callback_data="silver"),
+            InlineKeyboardButton("🥉 برنزی: یک درس", callback_data="bronze"),
+        ],
     ]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
