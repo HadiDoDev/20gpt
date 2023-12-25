@@ -52,10 +52,12 @@ def connect_to_vs(collection_name):
 class LANGCHAIN:
   def  __init__(self, model_name):
     self.llm = ChatOpenAI(openai_api_key=openai_api_key, model=model_name, max_tokens=1024)
+    self.prompt_str = '''you are a helpful assistant and you always extract and return reliable answer only from your {context}.
+      i will gave you {question} and just retun correct answer. you must answer in persian language'''
 
 
   @staticmethod
-  def _generate_prompt_messages(message, dialog_messages, chat_mode):
+  def _generate_prompt_messages(message, prompt, dialog_messages, chat_mode):
     # path_to_vector_store = f"./vector_stors/{chat_mode}_examples" 
     # embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
     # vectorstore = FAISS.load_local(path_to_vector_store, embeddings)
@@ -67,7 +69,7 @@ class LANGCHAIN:
     # print(example_selector.select_examples({"input":message}), flush=True)
     # examples = example_selector.select_examples({"input":message})
     # to_vectorize = [" ".join(['question: \n' + example['question'], 'answer: \n' + example['answer']]) for example in examples]
-    prompt = config.chat_modes[chat_mode]["prompt_start"]
+    # prompt = config.chat_modes[chat_mode]["prompt_start"]
     # prompt += 'as fewshot examples:\n'
     # for example in to_vectorize:
     #   prompt += example
@@ -111,7 +113,7 @@ class LANGCHAIN:
                          ]
     if chatmode in chat_modes_list:
       db = connect_to_vs(chatmode)
-      prompt = self._generate_prompt_messages(message, dialog_messages, chatmode)
+      prompt = self._generate_prompt_messages(message,self.prompt_str, dialog_messages, chatmode)
       print("Prompt:", prompt, flush=True)
       chain = self._create_chain(prompt, self.llm, db)
       print("Message:", message, type(message), flush=True)
