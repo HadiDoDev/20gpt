@@ -3,14 +3,14 @@ import subprocess
 
 app = Flask(__name__)
 
-@app.route('/run_command', methods=['POST'])
+@app.route('/increase_credit', methods=['POST'])
 def run_command():
     try:
         data = request.json
 
         user_id = data['user_id']
         total_rials = data['total_rials']
-        chat_modes = ','.join(data['chat_modes'])
+        chat_modes = ' '.join(data['chat_modes'].strip().split(","))
 
         command = f"docker exec -it 20gpt_bot python3 bot/increase_credit.py --user_id={user_id} --total_rials={total_rials} --chat_modes={chat_modes}"
 
