@@ -47,7 +47,7 @@ class Database:
             "first_seen": datetime.now(),
 
             "current_dialog_id": None,
-            "current_chat_mode": "assistant",
+            "current_chat_mode": "dini10",
             "current_model": configs.models["available_text_models"][0],
 
             "n_used_tokens": {},

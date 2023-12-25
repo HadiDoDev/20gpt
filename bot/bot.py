@@ -438,7 +438,7 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
 
     # in case of CancelledError
     # n_input_tokens, n_output_tokens = 0, 0
-    print("In Vision HANDLE!!!!!", image.name, image, '<=filename', flush=True)
+    print("In Vision HANDLE!!!!!", image.name, '<=filename', flush=True)
 
     # send placeholder message to user
     placeholder_message = await update.message.reply_text("درحال تبدیل عکس به متن...")
@@ -451,8 +451,11 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
     extracted_text = eboo_utils.convert(added_image['FileToken'])
 
     # Edit placeholder message
-    placeholder_message = await context.bot.edit_message_text("درحال استخراج سوال از متن و ارسال پاسخ، لطفا تا دریافت کامل اطلاعات صبر کنید...",
-                                                              chat_id=placeholder_message.chat_id, message_id=placeholder_message.message_id)
+    placeholder_message = await context.bot.edit_message_text(
+        "درحال استخراج سوال از متن و ارسال پاسخ، لطفا تا دریافت کامل اطلاعات صبر کنید...",
+        chat_id=placeholder_message.chat_id,
+        message_id=placeholder_message.message_id
+    )
 
 
     try:
@@ -642,7 +645,7 @@ async def cancel_handle(update: Update, context: CallbackContext):
 
 def get_chat_mode_menu(page_index: int):
     n_chat_modes_per_page = configs.n_chat_modes_per_page
-    text = f"Select <b>chat mode</b> ({len(configs.chat_modes)} modes available):"
+    text = f"انتخاب <b>درس</b> ({len(configs.chat_modes)} گزینه موجود است.):"
 
     # buttons
     chat_mode_keys = list(configs.chat_modes.keys())
@@ -844,7 +847,7 @@ async def show_balance_handle(update: Update, context: CallbackContext):
     total_rials = user_credit['total_rials'] - user_credit['used_rials']
 
 
-    text = f"مجموع اعتبار شما: <b>{total_rials:.03f} ریال</b>\n"
+    text = f"مجموع اعتبار شما: <b>{total_rials:.01f} ریال</b>\n"
     text += f"امکان دسترسی به درس های: <b>{user_credit['chat_modes']}</b>\n\n"
     text += details_text
     text += f"حالت آزمایشی: <b>{user_credit['is_trial']}</b>"
@@ -893,22 +896,18 @@ async def purchase_button(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     option = query.data
 
     # ارسال پست با تصویر، لینک و متن
-    if option == 'dini8':
-        caption = "دینی پایه هشتم"
-        photo_url = "static/photos/dini.jpg"
-        link_url = "https://google.com"
-    elif option == 'dini9':
-        caption = "دینی پایه نهم"
-        photo_url = "static/photos/dini.jpg"
-        link_url = "https://google.com"
-    elif option == 'dini10':
-        caption = "دینی پایه دهم"
-        photo_url = "static/photos/dini.jpg"
-        link_url = "https://google.com"
-    elif option == 'dastoorzabaan11':
-        caption = "دستور زبان پایه یازدهم"
-        photo_url = "static/photos/dastoorzabaan.jpg"
-        link_url = "https://google.com"
+    if option == 'bronze':
+        caption = "برنزی: یک درس"
+        photo_url = "static/photos/bronze-silver-gold.jpg"
+        link_url = "https://zarinp.al/558055"
+    elif option == 'silver':
+        caption = "نقره ای: سه درس"
+        photo_url = "static/photos/bronze-silver-gold.jpg"
+        link_url = "https://zarinp.al/558173"
+    elif option == 'gold':
+        caption = "طلایی: همه دروس"
+        photo_url = "static/photos/bronze-silver-gold.jpg"
+        link_url = "https://zarinp.al/558175"
     else:
         # اگر گزینه معتبر نباشد، هیچکاری انجام نده
         return
@@ -927,16 +926,22 @@ async def purchase(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Sends a message with three inline buttons attached."""
     keyboard = [
         [
-            InlineKeyboardButton("دینی: هشتم", callback_data="dini8"),
-            InlineKeyboardButton("دینی: نهم", callback_data="dini9"),
-            InlineKeyboardButton("دینی: دهم", callback_data="dini10"),
+            InlineKeyboardButton("🥉 برنزی: یک درس", callback_data="bronze"),
+            InlineKeyboardButton("🥈 نقره ای: سه درس", callback_data="silver"),
         ],
-        [InlineKeyboardButton("دستور زبان فارسی: یازدهم", callback_data="dastoorzabaan11")],
+        [InlineKeyboardButton("🥇 طلایی: همه دروس", callback_data="gold")],
     ]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    await update.message.reply_text("لطفا گزینه درس مورد نظر خود را برای خرید انتخاب کنید:", reply_markup=reply_markup)
+    await update.message.reply_text(
+        "گزینه درس مورد نظر خود را برای خرید انتخاب کنید\n:"
+        "بعد از انتخاب، جزئیات بسته و لینک خرید نمایش داده می شود\n:"
+        "لطفا توجه داشته باشید که بعد از پرداخت موفق، رسید مربوطه دریافتی را برای ادمین ارسال کنید و آیدی کاربری خود را به همراه درس های انتخاب شده اطلاع دهید.\n"
+        "ادمین: @hadi_do\n"
+        f"آیدی کاربری شما: {update.message.from_user.id}",
+        reply_markup=reply_markup
+    )
 
 
 # تابع برای نمایش منوی کاربری
