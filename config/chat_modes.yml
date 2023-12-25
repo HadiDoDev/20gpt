@@ -1,6 +1,6 @@
 dini10:
-  name:  من دستیار هوشمند دینی دهم هستم. لطفا سوال خود را بپرسید
-  welcome_message: hey i am dini 10m expert
+  name: دینی دهم
+  welcome_message:  من دستیار هوشمند دینی دهم هستم. لطفا سوال خود را بپرسید
   prompt_start: |
     you are a helpful assistant and you always extract and return reliable answer only from your {context}. i will gave you {question} and just retun correct answer. you must answer in persian language
   parse_mode: html
