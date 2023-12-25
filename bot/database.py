@@ -166,12 +166,20 @@ class Database:
         user_credit = self.get_user_attribute(user_id, "credit")
 
         if n_total_rials:
+            if user_credit['is_trial']:
+                user_credit['total_rials'] = 0.0
+                user_credit['is_trial'] = False
+
             user_credit['increased_at'] = datetime.now()
             user_credit['total_rials'] += n_total_rials
         
         if chat_modes:
+            if not all(chat_mode in list(config.chat_modes.keys()) for chat_mode in chat_modes):
+                raise ValueError(f"Invalid chat modes. {chat_modes}")
+            
             user_credit['chat_modes'].extends(chat_modes)
             user_credit['latest_chat_modes_added'].extends(chat_modes)
         
         if chat_modes or n_total_rials:
+                
             self.set_user_attribute(user_id, "credit", user_credit)
