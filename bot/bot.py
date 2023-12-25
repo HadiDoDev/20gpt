@@ -839,7 +839,7 @@ async def show_balance_handle(update: Update, context: CallbackContext):
     db.set_user_attribute(user_id, "last_interaction", datetime.now())
     user_credit = db.get_user_attribute(user_id, "credit")
 
-    details_text = "🏷️ Details:\n"
+    details_text = "جزئیات: 🏷️\n"
 
     total_rials = user_credit['total_rials'] - user_credit['used_rials']
 
