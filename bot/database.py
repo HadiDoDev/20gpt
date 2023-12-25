@@ -8,8 +8,11 @@ import config
 
 
 class Database:
-    def __init__(self):
-        self.client = pymongo.MongoClient(config.mongodb_uri)
+    def __init__(self, mongodb_uri=None):
+        if mongodb_uri:
+            self.client =  pymongo.MongoClient(mongodb_uri)
+        else:
+            self.client = pymongo.MongoClient(config.mongodb_uri)
         self.db = self.client["20gpt_bot"]
 
         self.user_collection = self.db["user"]
