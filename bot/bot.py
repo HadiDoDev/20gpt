@@ -300,7 +300,7 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
             db.update_n_used_tokens(user_id, current_model, n_input_tokens, n_output_tokens)
 
             # Update n Used Rials of User
-            print("COSTTTTTTTTTTTT:", cost, flush=True)
+            print("COST:", cost, flush=True)
             db.decrease_user_credit(user_id, cost)
 
         except asyncio.CancelledError:
@@ -476,6 +476,9 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
         step_size = 500
         question_list = []
         for i in range(0, len(extracted_text), step_size):
+            # Check user credit
+            db.check_if_user_has_credit(user_id, chat_mode, raise_exception=True)
+            
             extracted_question, cost = langchain_instance.parse_text(extracted_text[i:i+step_size])
             question_list.extend(extracted_question)
 
