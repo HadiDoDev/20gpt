@@ -45,17 +45,17 @@ logger = logging.getLogger(__name__)
 user_semaphores = {}
 user_tasks = {}
 
-HELP_MESSAGE = """Commands:
+HELP_MESSAGE = """کلیدهای میانبر:
 ⚪ /retry – Regenerate last bot answer
 ⚪ /new – آغاز گفت و گوی جدید
 ⚪ /mode – درس مورد نظر را انتخاب کنید
 ⚪ /balance – Show balance
 ⚪ /help – راهنما
 ⚪ /purchase – خرید
-
-🎨 Generate images from text prompts in <b>👩‍🎨 Artist</b> /mode
-👥 Add bot to <b>group chat</b>: /help_group_chat
-🎤 You can send <b>Voice Messages</b> instead of text
+قبل از پرسیدن سوال، مطمئن شوید که درس مورد نظر را به درستی انتخاب کرده باشید
+ سوال خود را کامل بپرسید
+ میتوانید سوال خود را تایپ کنید، وویس بفرستید و یا عکس نمونهسوال خود را بفرستید
+ برای دریافت پاسخ صبر کنید به دلیل پیام های زیاد ممکن است کمی طول بکشد
 """
 
 HELP_GROUP_CHAT_MESSAGE = """You can add bot to any <b>group chat</b> to help and entertain its participants!
