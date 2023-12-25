@@ -55,7 +55,8 @@ class Database:
                 "total_rials": 50000.0,
                 "chat_modes": [],
                 "increased_at": None,
-                "decreased_at": None
+                "decreased_at": None,
+                "latest_chat_modes_added": []
             },
             
             "n_generated_images": 0,
@@ -157,3 +158,17 @@ class Database:
         user_credit['decreased_at'] = datetime.now()
 
         self.set_user_attribute(user_id, "credit", user_credit)
+
+    def increase_user_credit(self, user_id: int, n_total_rials: float = None, chat_modes: list = None):
+        user_credit = self.get_user_attribute(user_id, "credit")
+
+        if n_total_rials:
+            user_credit['increased_at'] = datetime.now()
+            user_credit['total_rials'] += n_total_rials
+        
+        if chat_modes:
+            user_credit['chat_modes'].extends(chat_modes)
+            user_credit['latest_chat_modes_added'].extends(chat_modes)
+        
+        if chat_modes or n_total_rials:
+            self.set_user_attribute(user_id, "credit", user_credit)

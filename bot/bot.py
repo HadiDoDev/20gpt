@@ -844,10 +844,10 @@ async def show_balance_handle(update: Update, context: CallbackContext):
     total_rials = user_credit['total_rials'] - user_credit['used_rials']
 
 
-    text = f"You'r total credit: <b>{total_rials:.03f} Rials</b>\n"
-    text += f"You'r available chat modes: <b>{user_credit['chat_modes']}</b>\n\n"
+    text = f"مجموع اعتبار شما: <b>{total_rials:.03f} ریال</b>\n"
+    text += f"امکان دسترسی به درس های: <b>{user_credit['chat_modes']}</b>\n\n"
     text += details_text
-    text += f"Is on trial mode: <b>{user_credit['is_trial']}</b>"
+    text += f"حالت آزمایشی: <b>{user_credit['is_trial']}</b>"
     await update.message.reply_text(text, parse_mode=ParseMode.HTML)
 
 
