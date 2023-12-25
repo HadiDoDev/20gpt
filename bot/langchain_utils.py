@@ -109,9 +109,11 @@ class LANGCHAIN:
   def __call__(self, message, dialog_messages, chatmode):
     print("In __call__, chatmode:", chatmode, flush=True)
     chat_modes_list =  ['dini10', 'jamaeshenasi11ensani', 'ravanshenasi11ensani',
-                         'joghrafi12ensani', 'dini10ensani', 'amadeghi', 'jamaeshenasi10ensani',
-                         'zamin11', 'dini11', 'mohitzist11', 'joghrafi10', 'joghrafi11', 'tarikh11',
-                         'tarikh12ensani', 'zist10', 'zist11'
+                        'joghrafi12ensani', 'dini10ensani', 'amadeghi', 'jamaeshenasi10ensani',
+                        'zamin11', 'dini11', 'mohitzist11', 'joghrafi10', 'joghrafi11', 'tarikh11',
+                        'tarikh12ensani', 'zist10', 'zist11', 'amadeghi9', 'dini12', 'tahlil12', 'tafakor7', 'salamat12',
+                        'olom7', 'khanevadeh12', 'hoviat12', 'hedieh9', 'hedieh8', 'hedieh7', 'ejtemaee9', 'ejtemaee8',
+                        'dini12ensani', 'dini12', 'ejtemaee7'
                          ]
     if chatmode in chat_modes_list:
       db = connect_to_vs(chatmode)
