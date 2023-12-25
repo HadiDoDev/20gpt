@@ -47,9 +47,9 @@ user_tasks = {}
 
 HELP_MESSAGE = """کلیدهای میانبر:
 ⚪ /new – آغاز گفتگو جدید
-⚪ /retry – تولید دوباره آخرین پاسخ
 ⚪ /mode – انتخاب درس
-⚪ /purchase – خرید
+⚪ /retry – تکرار پاسخ سوال قبلی
+⚪ /purchase – خرید اعتبار دروس
 ⚪ /balance – نمایش اعتبار
 ⚪ /help – راهنما
 قبل از پرسیدن سوال، مطمئن شوید که درس مورد نظر را به درستی انتخاب کرده باشید
@@ -954,11 +954,12 @@ def get_user_menu_markup():
 
 async def post_init(application: Application):
     await application.bot.set_my_commands([
-        BotCommand("/new", "گفت و گوی جدید"),
+        BotCommand("/new", "گفتگوی جدید"),
         BotCommand("/mode", "انتخاب درس"),
-        BotCommand("/retry", "تکرار پاسخ  سوال قبلی"),
-        BotCommand("/help", "راهنما"),
+        BotCommand("/retry", "تکرار پاسخ سوال قبلی"),
         BotCommand("/purchase", "خرید اعتبار دروس"),
+        BotCommand("/balance", "نمایش اعتبار"),
+        BotCommand("/help", "راهنما"),
     ])
 
         # BotCommand("/settings", "Show settings"),
