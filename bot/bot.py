@@ -952,7 +952,7 @@ async def post_init(application: Application):
         BotCommand("/retry", "Re-generate response for previous query"),
         BotCommand("/balance", "Show balance"),
         BotCommand("/settings", "Show settings"),
-        BotCommand("/help", "Show help message"),
+        BotCommand("/help", "راهنما"),
         BotCommand("/purchase", "Show subscriptions"),
         BotCommand("/menu", "Show subscriptions"),
     ])
