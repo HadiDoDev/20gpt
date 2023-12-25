@@ -106,7 +106,9 @@ class LANGCHAIN:
     print("In __call__, chatmode:", chatmode, flush=True)
     chat_modes_list =  ['dini10', 'jamaeshenasi11ensani', 'ravanshenasi11ensani',
                          'joghrafi12ensani', 'dini10ensani', 'amadeghi', 'jamaeshenasi10ensani',
-                         'zamin11', 'dini11', 'mohitzist11']
+                         'zamin11', 'dini11', 'mohitzist11', 'joghrafi10', 'joghrafi11', 'tarikh11',
+                         'tarikh12ensani', 'zist10', 'zist11'
+                         ]
     if chatmode in chat_modes_list:
       db = connect_to_vs(chatmode)
       prompt = self._generate_prompt_messages(message, dialog_messages, chatmode)
