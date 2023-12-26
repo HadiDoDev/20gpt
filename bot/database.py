@@ -55,7 +55,7 @@ class Database:
             "credit": {
                 "is_trial": True,
                 "used_rials": 0.0,
-                "total_rials": 50000.0,
+                "total_rials": 100000.0,
                 "chat_modes": [],
                 "increased_at": None,
                 "decreased_at": None,

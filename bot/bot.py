@@ -900,16 +900,28 @@ async def purchase_button(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
 
     # ارسال پست با تصویر، لینک و متن
     if option == 'bronze':
-        caption = "برنزی: یک درس"
-        photo_url = "static/photos/bronze-silver-gold.jpg"
+        caption = """
+        خرید بسته برنزی: با خرید این بسته، شما به "یک" درس با انتخاب خودتان دسترسی خواهید داشت
+        هزینه این بسته، ۲۰۰ هزار تومان است که به که کیف پول شما اضافه خواهد شد. مدت زمان استفاده یک ماه خواهد بود.\n
+        بعد از پرداخت، رسید و آیدی کاربری خود -که بات به شما اختصاص میدهد- به همراه نام دروس انتخابی موردنظرتون رو به @ir20gpt_support ارسال کنید
+        """
+        photo_url = "static/photos/bronze.jpg"
         link_url = "https://zarinp.al/558055"
     elif option == 'silver':
-        caption = "نقره ای: سه درس"
-        photo_url = "static/photos/bronze-silver-gold.jpg"
+        caption = """
+        خرید بسته نقره ای: با خرید این بسته، شما به "سه" درس با انتخاب خودتان دسترسی خواهید داشت
+        هزینه این بسته، ۵۰۰ هزار تومان است که به که کیف پول شما اضافه خواهد شد. مدت زمان استفاده یک ماه خواهد بود.\n
+        بعد از پرداخت، رسید و آیدی کاربری خود -که بات به شما اختصاص میدهد- به همراه نام دروس انتخابی موردنظرتون رو به @ir20gpt_support ارسال کنید
+        """
+        photo_url = "static/photos/silver.jpg"
         link_url = "https://zarinp.al/558173"
     elif option == 'gold':
-        caption = "طلایی: همه دروس"
-        photo_url = "static/photos/bronze-silver-gold.jpg"
+        caption = """
+        خرید بسته طلایی: با خرید این بسته، شما به "همه" دروس دسترسی خواهید داشت
+        هزینه این بسته، یک میلیون تومان است که به که کیف پول شما اضافه خواهد شد. مدت زمان استفاده "دو" ماه خواهد بود.\n
+        بعد از پرداخت، رسید و آیدی کاربری خود -که بات به شما اختصاص میدهد- به همراه نام دروس انتخابی موردنظرتون رو به @ir20gpt_support ارسال کنید
+        """
+        photo_url = "static/photos/gold.jpg"
         link_url = "https://zarinp.al/558175"
     else:
         # اگر گزینه معتبر نباشد، هیچکاری انجام نده
