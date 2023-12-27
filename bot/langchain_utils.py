@@ -97,7 +97,7 @@ class LANGCHAIN:
   @staticmethod
   def _create_chain(prompt, llm, db):
     chain = (RunnableParallel(
-      {"context": itemgetter("question") | db.as_retriever(), 'question': RunnablePassthrough()}
+      {"context": itemgetter("question") | db.as_retriever(search_kwargs={"k": 5}), 'question': RunnablePassthrough()}
       ) | prompt | llm)
     return chain
   

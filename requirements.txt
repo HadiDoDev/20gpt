@@ -8,6 +8,5 @@ langchain==0.0.351
 qdrant-client==1.7.0
 pillow==10.1.0
 faiss-cpu==1.7.4
-unstructured[all-docs]==0.11.6
-beautifulsoup4==4.12.2
+
 
