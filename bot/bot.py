@@ -245,6 +245,9 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
             }[configs.chat_modes[chat_mode]["parse_mode"]]
 
             # print(type(_message), _message, flush=True)
+            if len(dialog_messages)>=3:
+                dialog_messages = dialog_messages[1:]
+
             langchain_instance=langchain_utils.LANGCHAIN("gpt-4-1106-preview")
             answer, n_input_tokens, n_output_tokens, n_first_dialog_messages_removed, cost = langchain_instance(_message, dialog_messages, chat_mode)
             
