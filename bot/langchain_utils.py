@@ -93,7 +93,7 @@ class LANGCHAIN:
     #     example_prompt=ChatPromptTemplate.from_messages(messages)
     # )
     messages.append(("human", '{question}'))
-    messages.append(("ai", '?')
+    messages.append(("ai", '?'))
     return ChatPromptTemplate.from_messages(messages)
   
   @staticmethod
