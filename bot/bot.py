@@ -246,7 +246,7 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
 
             # print(type(_message), _message, flush=True)
             langchain_instance=langchain_utils.LANGCHAIN("gpt-4-1106-preview")
-            answer, n_input_tokens, n_output_tokens, n_first_dialog_messages_removed, cost = langchain_instance(_message, [], chat_mode)
+            answer, n_input_tokens, n_output_tokens, n_first_dialog_messages_removed, cost = langchain_instance(_message, dialog_messages[-2:], chat_mode)
             
             # chatgpt_instance = openai_utils.ChatGPT(model=current_model)
             # if configs.enable_message_streaming:
