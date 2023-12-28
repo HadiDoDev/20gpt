@@ -81,7 +81,7 @@ class LANGCHAIN:
     #     messages.append(("ai",example['answer']))
     for dialog_message in dialog_messages:
         messages.append(("human", dialog_message["user"]))
-        messages.append(("ai", dialog_message["bot"]))
+        # messages.append(("ai", dialog_message["bot"]))
         # messages.append({"role": "user", "content": message})
     # few_shot_prompt = FewShotChatMessagePromptTemplate(
     #     # The input variables select the values to pass to the example_selector
