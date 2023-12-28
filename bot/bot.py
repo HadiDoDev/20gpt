@@ -455,7 +455,7 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
 
     # Edit placeholder message
     placeholder_message = await context.bot.edit_message_text(
-        "**درحال استخراج سوال از متن و ارسال پاسخ، لطفا تا دریافت کامل اطلاعات صبر کنید...**",
+        "<b>درحال استخراج سوال از متن و ارسال پاسخ، لطفا تا دریافت کامل اطلاعات صبر کنید...<b>",
         chat_id=placeholder_message.chat_id,
         message_id=placeholder_message.message_id
     )
