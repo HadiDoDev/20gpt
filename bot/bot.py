@@ -481,37 +481,30 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
     try:
         message = update.message.caption
 
-        # if message is None or len(message) == 0:
-        #     await update.message.reply_text(
-        #         "🥲 You sent <b>empty message</b>. Please, try again!",
-        #         parse_mode=ParseMode.HTML,
-        #     )
-        #     return
         if message:
             extracted_text = f"{message}\n {extracted_text}"
-        
-        
-
-        langchain_instance = langchain_utils.LANGCHAIN("gpt-4-1106-preview")
         step_size = 4000
-        question_list = []
         for i in range(0, len(extracted_text), step_size):
-            # Check user credit
-            db.check_if_user_has_credit(user_id, chat_mode, raise_exception=True)
+            await update.message.reply_text(extracted_text[i:i+step_size])
+        # langchain_instance = langchain_utils.LANGCHAIN("gpt-4-1106-preview")
+        # step_size = 4000
+        # question_list = []
+        # for i in range(0, len(extracted_text), step_size):
+        #     # Check user credit
+        #     db.check_if_user_has_credit(user_id, chat_mode, raise_exception=True)
             
-            extracted_question, cost = langchain_instance.parse_text(extracted_text[i:i+step_size])
-            question_list.extend(extracted_question)
+        #     extracted_question, cost = langchain_instance.parse_text(extracted_text[i:i+step_size])
+        #     question_list.extend(extracted_question)
 
-            # Update used_rials user attr.
-            db.decrease_user_credit(user_id, cost)
+        #     # Update used_rials user attr.
+        #     db.decrease_user_credit(user_id, cost)
 
-        # Delete placeholder message
-        await context.bot.delete_message(chat_id=placeholder_message.chat_id, message_id=placeholder_message.message_id)
+        # # Delete placeholder message
+        # await context.bot.delete_message(chat_id=placeholder_message.chat_id, message_id=placeholder_message.message_id)
 
-        # print("Question List:", question_list, flush=True)
-        for question in question_list:
-            placeholder_message = await update.message.reply_text(question)
-            ## i commented this line 
+        # for question in question_list:
+        #     placeholder_message = await update.message.reply_text(question)
+        #     ## i commented this line 
             # await message_handle(update, context, message=question)
 
       
