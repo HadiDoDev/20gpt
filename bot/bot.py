@@ -455,10 +455,17 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
 
     # Edit placeholder message
     placeholder_message = await context.bot.edit_message_text(
-        "درحال استخراج سوال از متن و ارسال پاسخ، لطفا تا دریافت کامل اطلاعات صبر کنید...",
+        "درحال استخراج سوال از متن  لطفا تا دریافت کامل اطلاعات صبر کنید...",
         chat_id=placeholder_message.chat_id,
         message_id=placeholder_message.message_id,
     )
+    await context.bot.edit_message_text(
+       """پس از استخراج کامل سوالات، متن هر سوال را جداگانه انتخاب و کپی کنید
+         در صورت نیاز سوال را ویرایش کرده و سپس برای بات ارسال کنید""",
+        chat_id=placeholder_message.chat_id,
+        message_id=placeholder_message.message_id,
+    )
+
 
 
     try:
