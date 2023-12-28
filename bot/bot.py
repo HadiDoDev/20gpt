@@ -460,7 +460,9 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
         message_id=placeholder_message.message_id,
     )
     placeholder_message = await context.bot.edit_message_text(
-       """پس از استخراج کامل سوالات، متن هر سوال را جداگانه انتخاب و کپی کنید
+       """                          توجه ** توجه
+       پس از تبدیل عکس به  متن، متن به شما نمایش داده میشود
+                 هر سوال را جداگانه  از متن انتخاب و کپی کنید
          در صورت نیاز سوال را ویرایش کرده و سپس برای بات ارسال کنید""",
         chat_id=placeholder_message.chat_id,
         message_id=placeholder_message.message_id,
