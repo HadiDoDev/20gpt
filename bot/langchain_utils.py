@@ -53,7 +53,7 @@ def connect_to_vs(collection_name):
 class LANGCHAIN:
   def  __init__(self, model_name):
     self.llm = ChatOpenAI(openai_api_key=openai_api_key, model=model_name, max_tokens=1024)
-    self.prompt_str = '''you are a helpful assistant and you always extract and return reliable answer only from your {context}.
+    self.prompt_str = '''you are a helpful assistant and you always provide reliable answer only based on your {context}.
       i will gave you {question} and just retun correct answer. you must answer in persian language'''
 
 
