@@ -54,7 +54,7 @@ class LANGCHAIN:
   def  __init__(self, model_name):
     self.llm = ChatOpenAI(openai_api_key=openai_api_key, model=model_name, max_tokens=1024)
     self.prompt_str = '''you are a helpful assistant and you always provide reliable answer only based on your {context}.
-      i will gave you {question} and just retun correct answer. you must answer in persian language'''
+      i will gave you {question} and just retun correct answer.do not return your previouse answer, you must answer in persian language'''
 
 
   @staticmethod
@@ -92,6 +92,8 @@ class LANGCHAIN:
     #     # 1 human, and 1 AI
     #     example_prompt=ChatPromptTemplate.from_messages(messages)
     # )
+    messages.append(("human", '{question}'))
+    messages.append(("ai", '?')
     return ChatPromptTemplate.from_messages(messages)
   
   @staticmethod
