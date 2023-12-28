@@ -460,15 +460,22 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
         chat_id=placeholder_message.chat_id,
         message_id=placeholder_message.message_id,
     )
-    placeholder_message = await context.bot.edit_message_text("""
+    # placeholder_message = await context.bot.edit_message_text("""
+    # توجه ** توجه
+    # پس از تبدیل عکس به  متن، متن ارسالی به شما نمایش داده میشود
+    # هر سوال را جداگانه  از متن انتخاب و کپی کنید       
+    # در صورت نیاز سوال را ویرایش و یا تکمیل کرده و سپس برای بات ارسال کنید
+    # ...لطفا تا دریافت کامل اطلاعات صبر کنید""",
+    #     chat_id=placeholder_message.chat_id,
+    #     message_id=placeholder_message.message_id,
+    # )
+ 
+    await update.message.reply_text(    """
     توجه ** توجه
     پس از تبدیل عکس به  متن، متن ارسالی به شما نمایش داده میشود
     هر سوال را جداگانه  از متن انتخاب و کپی کنید       
-    در صورت نیاز سوال را ویرایش و یا تکمیل کرده و سپس برای بات ارسال کنید""",
-        chat_id=placeholder_message.chat_id,
-        message_id=placeholder_message.message_id,
-    )
-
+    در صورت نیاز سوال را ویرایش و یا تکمیل کرده و سپس برای بات ارسال کنید
+    ...لطفا تا دریافت کامل اطلاعات صبر کنید""")
 
 
     try:
