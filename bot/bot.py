@@ -458,7 +458,7 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
         "<b>درحال استخراج سوال از متن و ارسال پاسخ، لطفا تا دریافت کامل اطلاعات صبر کنید...<b>",
         chat_id=placeholder_message.chat_id,
         message_id=placeholder_message.message_id,
-         parse_mode='HTML'
+         parse_mode=ParseMode.HTML
     )
 
 
