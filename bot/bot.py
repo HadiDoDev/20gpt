@@ -485,7 +485,7 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
         
 
         langchain_instance = langchain_utils.LANGCHAIN("gpt-4-1106-preview")
-        step_size = 500
+        step_size = 4000
         question_list = []
         for i in range(0, len(extracted_text), step_size):
             # Check user credit
