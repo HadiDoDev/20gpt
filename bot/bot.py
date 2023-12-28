@@ -475,7 +475,7 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
         
         
 
-        langchain_instance = langchain_utils.LANGCHAIN("gpt-3.5-turbo-0613")
+        langchain_instance = langchain_utils.LANGCHAIN("gpt-4-0613")
         step_size = 500
         question_list = []
         for i in range(0, len(extracted_text), step_size):
