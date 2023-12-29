@@ -115,7 +115,7 @@ class LANGCHAIN:
                         'zamin11', 'dini11', 'mohitzist11', 'joghrafi10', 'joghrafi11', 'tarikh11',
                         'tarikh12ensani', 'zist10', 'zist11', 'amadeghi9', 'dini12', 'tahlil12', 'tafakor7', 'salamat12',
                         'olom7', 'khanevadeh12', 'hoviat12', 'hedieh9', 'hedieh8', 'hedieh7', 'ejtemaee9', 'ejtemaee8',
-                        'dini12ensani', 'dini12', 'ejtemaee7', 'zist12'
+                        'dini12ensani', 'dini12', 'ejtemaee7', 'zist12', 'economy10', 'falsafeh11'
                          ]
     if chatmode in chat_modes_list:
       db = connect_to_vs(chatmode)
