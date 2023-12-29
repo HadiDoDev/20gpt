@@ -630,7 +630,7 @@ async def show_chat_modes_callback_handle(update: Update, context: CallbackConte
      db.set_user_attribute(user_id, "last_interaction", datetime.now())
 
      query = update.callback_query
-     await query.answer()
+     await query.answer(cache_time=60)
 
      page_index = int(query.data.split("|")[1])
      if page_index < 0:
@@ -705,7 +705,7 @@ async def set_settings_handle(update: Update, context: CallbackContext):
     user_id = update.callback_query.from_user.id
 
     query = update.callback_query
-    await query.answer()
+    await query.answer(cache_time=60)
 
     _, model_key = query.data.split("|")
     db.set_user_attribute(user_id, "current_model", model_key)
@@ -823,7 +823,7 @@ async def purchase_button(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
 
     # CallbackQueries need to be answered, even if no notification to the user is needed
     # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
-    await query.answer()
+    await query.answer(cache_time=60)
     option = query.data
 
     # ارسال پست با تصویر، لینک و متن
