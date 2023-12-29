@@ -486,6 +486,7 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
         step_size = 4000
         for i in range(0, len(extracted_text), step_size):
             await update.message.reply_text(extracted_text[i:i+step_size])
+        await update.message.reply_text("از متن فوق، هرسوال را به شکل جداگانه انتخاب  واز مدل بپرسید. همه متن را یکجا کپی و برای بات ارسال نکنید لطفا مرسی")
         # langchain_instance = langchain_utils.LANGCHAIN("gpt-4-1106-preview")
         # step_size = 4000
         # question_list = []
