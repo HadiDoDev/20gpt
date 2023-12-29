@@ -649,7 +649,7 @@ async def set_chat_mode_handle(update: Update, context: CallbackContext):
     user_id = update.callback_query.from_user.id
 
     query = update.callback_query
-    await query.answer()
+    await query.answer(cache_time=60)
 
     chat_mode = query.data.split("|")[1]
 
