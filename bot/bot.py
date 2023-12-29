@@ -293,7 +293,7 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
 
             # update user data
             new_dialog_message = {"user": _message, "bot": answer, "date": datetime.now()}
-            print("NDM:", new_dialog_message, flush=True)
+            # print("NDM:", new_dialog_message, flush=True)
         
             db.set_dialog_messages(
                 user_id,
@@ -304,7 +304,7 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
             db.update_n_used_tokens(user_id, current_model, n_input_tokens, n_output_tokens)
 
             # Update n Used Rials of User
-            print("COST:", cost, flush=True)
+            # print("COST:", cost, flush=True)
             db.decrease_user_credit(user_id, cost)
 
         except asyncio.CancelledError:
@@ -442,7 +442,7 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
 
     # in case of CancelledError
     # n_input_tokens, n_output_tokens = 0, 0
-    print("In Vision HANDLE!!!!!", image.name, '<=filename', flush=True)
+    # print("In Vision HANDLE!!!!!", image.name, '<=filename', flush=True)
 
     # send placeholder message to user
     placeholder_message = await update.message.reply_text("درحال تبدیل عکس به متن...")

@@ -109,7 +109,7 @@ class LANGCHAIN:
     return answer
 
   def __call__(self, message, dialog_messages, chatmode):
-    print("In __call__, chatmode:", chatmode, flush=True)
+    # print("In __call__, chatmode:", chatmode, flush=True)
     chat_modes_list =  ['dini10', 'jamaeshenasi11ensani', 'ravanshenasi11ensani',
                         'joghrafi12ensani', 'dini10ensani', 'amadeghi', 'jamaeshenasi10ensani',
                         'zamin11', 'dini11', 'mohitzist11', 'joghrafi10', 'joghrafi11', 'tarikh11',
@@ -120,11 +120,11 @@ class LANGCHAIN:
     if chatmode in chat_modes_list:
       db = connect_to_vs(chatmode)
       prompt = self._generate_prompt_messages(message,self.prompt_str, dialog_messages, chatmode)
-      print("Prompt:", prompt, flush=True)
+      # print("Prompt:", prompt, flush=True)
       chain = self._create_chain(prompt, self.llm, db)
-      print("Message:", message, type(message), flush=True)
+      # print("Message:", message, type(message), flush=True)
       with get_openai_callback() as cb:
-        print("OpenAPI Callback:", flush=True)
+        # print("OpenAPI Callback:", flush=True)
         answer = chain.invoke({'question':message}).content
         answer = self._postprocess_answer(answer)
         # print("Get Response:", flush=True)
@@ -153,7 +153,7 @@ class LANGCHAIN:
     chain = create_extraction_chain(schema, self.llm, prompt)
     try:
       with get_openai_callback() as cb:
-          print("OpenAPI Callback:", flush=True)
+          # print("OpenAPI Callback:", flush=True)
 
           response = chain.invoke({"text": str(text)})['text']
           n_input_tokens, n_output_tokens, cost = cb.prompt_tokens, cb.completion_tokens, cb.total_cost
