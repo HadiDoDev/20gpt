@@ -664,19 +664,22 @@ async def set_chat_mode_handle(update: Update, context: CallbackContext):
     user_id = update.callback_query.from_user.id
 
     query = update.callback_query
-    await query.answer(cache_time=60)
+    try:
+        await query.answer(cache_time=60)
 
-    chat_mode = query.data.split("|")[1]
+        chat_mode = query.data.split("|")[1]
 
-    db.set_user_attribute(user_id, "current_chat_mode", chat_mode)
-    db.start_new_dialog(user_id)
+        db.set_user_attribute(user_id, "current_chat_mode", chat_mode)
+        db.start_new_dialog(user_id)
 
-    await context.bot.send_message(
-        update.callback_query.message.chat.id,
-        f"{configs.chat_modes[chat_mode]['welcome_message']}",
-        parse_mode=ParseMode.HTML
-    )
-
+        await context.bot.send_message(
+            update.callback_query.message.chat.id,
+            f"{configs.chat_modes[chat_mode]['welcome_message']}",
+            parse_mode=ParseMode.HTML
+        )
+    except telegram.error.BadRequest as e:
+        if str(e).startswith("Message is not modified"):
+            pass
 
 def get_settings_menu(user_id: int):
     current_model = db.get_user_attribute(user_id, "current_model")
