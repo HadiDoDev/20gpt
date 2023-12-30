@@ -632,14 +632,13 @@ async def show_chat_modes_handle(update: Update, context: CallbackContext):
 
 
 async def show_chat_modes_callback_handle(update: Update, context: CallbackContext):
-     print("show_chat_modes_callback_handle", flush=True)
-     await register_user_if_not_exists(update.callback_query, context, update.callback_query.from_user)
-     if await is_previous_message_not_answered_yet(update.callback_query, context): return
+    print("show_chat_modes_callback_handle", flush=True)
+    await register_user_if_not_exists(update.callback_query, context, update.callback_query.from_user)
+    if await is_previous_message_not_answered_yet(update.callback_query, context): return
 
-     user_id = update.callback_query.from_user.id
-     db.set_user_attribute(user_id, "last_interaction", datetime.now())
-     try:
-
+    user_id = update.callback_query.from_user.id
+    db.set_user_attribute(user_id, "last_interaction", datetime.now())
+    try:
         query = update.callback_query
         await query.answer(cache_time=60)
 
@@ -648,13 +647,15 @@ async def show_chat_modes_callback_handle(update: Update, context: CallbackConte
             return
 
         text, reply_markup = get_chat_mode_menu(page_index)
-     
+
         await query.edit_message_text(text, reply_markup=reply_markup, parse_mode=ParseMode.HTML)
-     except telegram.error.BadRequest as e:
-         if str(e).startswith("Message is not modified"):
-             pass
-         else:
-             await show_chat_modes_handle(update, context)
+    except telegram.error.BadRequest as e:
+        if str(e).startswith("Message is not modified"):
+            pass
+    except telegram.error.TimedOut:
+        await show_chat_modes_handle(update, context)
+    # finally:    
+            # await show_chat_modes_handle(update, context)
 
 
 async def set_chat_mode_handle(update: Update, context: CallbackContext):
