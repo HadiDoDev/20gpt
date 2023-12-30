@@ -459,11 +459,11 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
     extracted_text = eboo_utils.convert(added_image['FileToken'])
 
     # Edit placeholder message
-    placeholder_message = await update.message.reply_text(
-        "درحال استخراج سوال از متن  لطفا تا دریافت کامل اطلاعات صبر کنید...",
-        chat_id=placeholder_message.chat_id,
-        message_id=placeholder_message.message_id,
-    )
+    # placeholder_message = await context.bot.edit_message_text(
+    #     "درحال استخراج سوال از متن  لطفا تا دریافت کامل اطلاعات صبر کنید...",
+    #     chat_id=placeholder_message.chat_id,
+    #     message_id=placeholder_message.message_id,
+    # )
     # placeholder_message = await context.bot.edit_message_text("""
     # توجه ** توجه
     # پس از تبدیل عکس به  متن، متن ارسالی به شما نمایش داده میشود
