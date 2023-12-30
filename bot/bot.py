@@ -233,7 +233,7 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
             placeholder_message = await update.message.reply_text("...")
 
             # send typing action
-            await update.message.chat.send_action(action="typing")
+            # await update.message.chat.send_action(action="typing")
 
             if _message is None or len(_message) == 0:
                 await update.message.reply_text("🥲 You sent <b>empty message</b>. Please, try again!", parse_mode=ParseMode.HTML)
@@ -452,7 +452,7 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
     placeholder_message = await update.message.reply_text("درحال تبدیل عکس به متن...")
 
     # send typing action
-    await update.message.chat.send_action(action="typing")
+    # await update.message.chat.send_action(action="typing")
 
     filelink = f"http://51.89.156.250:8095/{image.name.split('/')[-1]}"
     added_image = eboo_utils.addfile(filelink)
