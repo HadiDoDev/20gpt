@@ -186,6 +186,7 @@ async def retry_handle(update: Update, context: CallbackContext):
 
 
 async def message_handle(update: Update, context: CallbackContext, message=None, use_new_dialog_timeout=True):
+    print("In message_handle", flush=True)
     # check if bot was mentioned (for group chats)
     if not await is_bot_mentioned(update, context):
         return
@@ -212,6 +213,7 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
         return
 
     async def message_handle_fn():
+        print("In message_handle", flush=True)
         # new dialog timeout
         if use_new_dialog_timeout:
             if (datetime.now() - db.get_user_attribute(user_id, "last_interaction")).seconds > configs.new_dialog_timeout and len(db.get_dialog_messages(user_id)) > 0:
@@ -355,6 +357,7 @@ async def is_previous_message_not_answered_yet(update: Update, context: Callback
 
 
 async def voice_message_handle(update: Update, context: CallbackContext):
+    print("In voice_message_handle", flush=True)
     # check if bot was mentioned (for group chats)
     if not await is_bot_mentioned(update, context):
         return
@@ -385,6 +388,7 @@ async def voice_message_handle(update: Update, context: CallbackContext):
 
 
 async def vision_message_handle(update: Update, context: CallbackContext, use_new_dialog_timeout: bool = True):
+    print("In vision_message_handle", flush=True)
         # check if bot was mentioned (for group chats)
     if not await is_bot_mentioned(update, context):
         return
@@ -470,12 +474,13 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
     #     message_id=placeholder_message.message_id,
     # )
  
-    await update.message.reply_text(    """
+    await update.message.reply_text("""
     توجه ** توجه
     پس از تبدیل عکس به  متن، متن ارسالی به شما نمایش داده میشود
     هر سوال را جداگانه  از متن انتخاب و کپی کنید       
     در صورت نیاز سوال را ویرایش و یا تکمیل کرده و سپس برای بات ارسال کنید
-    ...لطفا تا دریافت کامل اطلاعات صبر کنید""")
+    ...لطفا تا دریافت کامل اطلاعات صبر کنید"""
+    )
 
 
     try:
@@ -487,6 +492,7 @@ async def vision_message_handle(update: Update, context: CallbackContext, use_ne
         for i in range(0, len(extracted_text), step_size):
             await update.message.reply_text(extracted_text[i:i+step_size])
         await update.message.reply_text("از متن فوق، هرسوال را به شکل جداگانه انتخاب  واز مدل بپرسید. همه متن را یکجا کپی و برای بات ارسال نکنید لطفا مرسی")
+        
         # langchain_instance = langchain_utils.LANGCHAIN("gpt-4-1106-preview")
         # step_size = 4000
         # question_list = []
@@ -548,6 +554,7 @@ async def generate_image_handle(update: Update, context: CallbackContext, messag
 
 
 async def new_dialog_handle(update: Update, context: CallbackContext):
+    print("new_dialog_handle", flush=True)
     await register_user_if_not_exists(update, context, update.message.from_user)
     if await is_previous_message_not_answered_yet(update, context): return
 
@@ -562,6 +569,7 @@ async def new_dialog_handle(update: Update, context: CallbackContext):
 
 
 async def cancel_handle(update: Update, context: CallbackContext):
+    print("cancel_handle", flush=True)
     await register_user_if_not_exists(update, context, update.message.from_user)
 
     user_id = update.message.from_user.id
@@ -612,6 +620,7 @@ def get_chat_mode_menu(page_index: int):
 
 
 async def show_chat_modes_handle(update: Update, context: CallbackContext):
+    print("show_chat_modes_handle", flush=True)
     await register_user_if_not_exists(update, context, update.message.from_user)
     if await is_previous_message_not_answered_yet(update, context): return
 
@@ -623,28 +632,33 @@ async def show_chat_modes_handle(update: Update, context: CallbackContext):
 
 
 async def show_chat_modes_callback_handle(update: Update, context: CallbackContext):
+     print("show_chat_modes_callback_handle", flush=True)
      await register_user_if_not_exists(update.callback_query, context, update.callback_query.from_user)
      if await is_previous_message_not_answered_yet(update.callback_query, context): return
 
      user_id = update.callback_query.from_user.id
      db.set_user_attribute(user_id, "last_interaction", datetime.now())
-
-     query = update.callback_query
-     await query.answer(cache_time=60)
-
-     page_index = int(query.data.split("|")[1])
-     if page_index < 0:
-         return
-
-     text, reply_markup = get_chat_mode_menu(page_index)
      try:
-         await query.edit_message_text(text, reply_markup=reply_markup, parse_mode=ParseMode.HTML)
+
+        query = update.callback_query
+        await query.answer(cache_time=60)
+
+        page_index = int(query.data.split("|")[1])
+        if page_index < 0:
+            return
+
+        text, reply_markup = get_chat_mode_menu(page_index)
+     
+        await query.edit_message_text(text, reply_markup=reply_markup, parse_mode=ParseMode.HTML)
      except telegram.error.BadRequest as e:
          if str(e).startswith("Message is not modified"):
              pass
+         else:
+             await show_chat_modes_handle(update, context)
 
 
 async def set_chat_mode_handle(update: Update, context: CallbackContext):
+    print("set_chat_mode_handle", flush=True)
     await register_user_if_not_exists(update.callback_query, context, update.callback_query.from_user)
     user_id = update.callback_query.from_user.id
 
@@ -705,15 +719,17 @@ async def set_settings_handle(update: Update, context: CallbackContext):
     user_id = update.callback_query.from_user.id
 
     query = update.callback_query
-    await query.answer(cache_time=60)
-
-    _, model_key = query.data.split("|")
-    db.set_user_attribute(user_id, "current_model", model_key)
-    db.start_new_dialog(user_id)
-
-    text, reply_markup = get_settings_menu(user_id)
+    
     try:
+        await query.answer(cache_time=60)
+
+        _, model_key = query.data.split("|")
+        db.set_user_attribute(user_id, "current_model", model_key)
+        db.start_new_dialog(user_id)
+
+        text, reply_markup = get_settings_menu(user_id)
         await query.edit_message_text(text, reply_markup=reply_markup, parse_mode=ParseMode.HTML)
+    
     except telegram.error.BadRequest as e:
         if str(e).startswith("Message is not modified"):
             pass
@@ -767,6 +783,7 @@ async def _show_balance_handle(update: Update, context: CallbackContext):
 
 
 async def show_balance_handle(update: Update, context: CallbackContext):
+    print("show_balance_handle", flush=True)
     await register_user_if_not_exists(update, context, update.message.from_user)
 
     user_id = update.message.from_user.id
@@ -818,6 +835,7 @@ async def error_handle(update: Update, context: CallbackContext) -> None:
 
 
 async def purchase_button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    print("purchase_button", flush=True)
     """Parses the CallbackQuery and updates the message text."""
     query = update.callback_query
 
