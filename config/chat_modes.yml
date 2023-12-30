@@ -41,6 +41,7 @@ jamaeshenasi11ensani:
 jamaeshenasi10ensani:
   name: جامعه شناسی دهم انسانی
   welcome_message:  من دستیار هوشمند جامعه شناسی دهم انسانی هستم. لطفا سوال خود را دقیق و کامل مانند یک سوال امتحانی بپرسید
+  parse_mode: html
 
 joghrafi12ensani:
   name: جغرافی دوازدهم انسانی
