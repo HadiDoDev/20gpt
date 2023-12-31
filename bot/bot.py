@@ -902,9 +902,8 @@ async def purchase(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     await update.message.reply_text(
-        "گزینه درس مورد نظر خود را برای خرید انتخاب کنید\n:"
         "بعد از انتخاب، جزئیات بسته و لینک خرید نمایش داده می شود\n:"
-        "لطفا توجه داشته باشید که بعد از پرداخت موفق، رسید دریافتی را برای ادمین ارسال کنید و آیدی کاربری خود را به همراه درس های انتخابی اطلاع دهید.\n"
+        "لطفا توجه داشته باشید که بعد از پرداخت موفق، رسید دریافتی را برای ادمین ارسال کنید و آیدی کاربری خود را به همراه پایه تحصیلی اطلاع دهید.\n"
         "ادمین: @ir20gpt_support\n"
         f"آیدی کاربری شما: {update.message.from_user.id}",
         reply_markup=reply_markup
