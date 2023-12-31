@@ -855,7 +855,7 @@ async def purchase_button(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         هزینه این بسته، 50 هزار تومان است که به که کیف پول شما اضافه خواهد شد. مدت زمان استفاده یک ماه خواهد بود.\n
         بعد از پرداخت، رسید و آیدی کاربری خود -که بات به شما اختصاص میدهد- به همراه پایه تحصیلی خود را به @ir20gpt_support ارسال کنید
         """
-        photo_url = "static/photos2/bronze.png"
+        photo_url = "static/photos2/bronze.jpg"
         link_url = "https://zarinp.al/559702"
     elif option == 'silver':
         caption = """
@@ -863,7 +863,7 @@ async def purchase_button(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         هزینه این بسته، 100 هزار تومان است که به که کیف پول شما اضافه خواهد شد. مدت زمان استفاده یک ماه خواهد بود.\n
         بعد از پرداخت، رسید و آیدی کاربری خود -که بات به شما اختصاص میدهد- به همراه نام دروس انتخابی موردنظرتون رو به @ir20gpt_support ارسال کنید
         """
-        photo_url = "static/photos2/silver.png"
+        photo_url = "static/photos2/silver.jpg"
         link_url = "https://zarinp.al/559800"
     elif option == 'gold':
         caption = """
@@ -871,7 +871,7 @@ async def purchase_button(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         هزینه این بسته، دویست هزار تومان است که به که کیف پول شما اضافه خواهد شد. مدت زمان استفاده "دو" ماه خواهد بود.\n
         بعد از پرداخت، رسید و آیدی کاربری خود -که بات به شما اختصاص میدهد- به همراه مقطع تحصیلی موردنظرتون رو به @ir20gpt_support ارسال کنید
         """
-        photo_url = "static/photos2/gold.png"
+        photo_url = "static/photos2/gold.jpg"
         link_url = "https://zarinp.al/559801"
     else:
         # اگر گزینه معتبر نباشد، هیچکاری انجام نده
