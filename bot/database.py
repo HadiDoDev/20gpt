@@ -151,7 +151,7 @@ class Database:
             return True
         else:
             if raise_exception:
-                raise ValueError(f"\nشما اعتبار کافی برای ادامه فرایند در درس انتخاب شده را ندارید.\nبا استفاده از منو و گزینه /purchase اقدام به خرید بسته های بسیار ارزان و افزایش اعتبار کنید.")
+                raise ValueError(f"\nشما اعتبار کافی برای ادامه فرایند را ندارید.\nبا استفاده از منو و گزینه /purchase اقدام به خرید بسته و افزایش اعتبار کنید.")
             else:
                 return False
 
