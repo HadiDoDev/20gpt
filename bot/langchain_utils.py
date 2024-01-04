@@ -51,7 +51,7 @@ def connect_to_vs(collection_name):
   path_to_vector_store = f"./vector_stors/{collection_name}" 
   embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
   db = FAISS.load_local(path_to_vector_store, embeddings)
-  print(f"Created{collection_name} db!!!!!!", flush=True)
+  print(f"Created {collection_name} db!!!!!!", flush=True)
   # print("all_dbs_length",all_dbs_length, flush=True)
 
   # print("DB:", db.similarity_search("اعمال ما تقدم وما تاخر را توضیح دهید"), flush=True)
