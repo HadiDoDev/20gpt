@@ -20,11 +20,11 @@ from langchain.schema.runnable import RunnableParallel, RunnablePassthrough
 from langchain.callbacks import get_openai_callback
 # import configs
 # from bot import all_dbs_length
-all_dbs_length = None  # Initialize vectors as None
+vector_stor_dict = None  # Initialize vectors as None
 
 def set_vectors(v):
-    global all_dbs_length
-    all_dbs_length = v
+    global vector_stor_dict
+    vector_stor_dict = v
 
 FACTOR = 1
 DOLLAR = 500000
@@ -52,7 +52,7 @@ def connect_to_vs(collection_name):
   embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
   db = FAISS.load_local(path_to_vector_store, embeddings)
   print("Created db!!!!!!", flush=True)
-  print("all_dbs_length",all_dbs_length, flush=True)
+  # print("all_dbs_length",all_dbs_length, flush=True)
 
   # print("DB:", db.similarity_search("اعمال ما تقدم وما تاخر را توضیح دهید"), flush=True)
 
@@ -126,7 +126,8 @@ class LANGCHAIN:
                         'dini12ensani', 'dini12', 'ejtemaee7', 'zist12', 'economy10', 'falsafeh11'
                          ]
     if chatmode in chat_modes_list:
-      db = connect_to_vs(chatmode)
+      # db = connect_to_vs(chatmode)
+      db = vector_stor_dict[chatmode]
       prompt = self._generate_prompt_messages(message,self.prompt_str, dialog_messages, chatmode)
       # print("Prompt:", prompt, flush=True)
       chain = self._create_chain(prompt, self.llm, db)
@@ -173,3 +174,19 @@ class LANGCHAIN:
 
 
     return final_answer, cost * FACTOR * DOLLAR
+  
+
+
+
+
+  class VectorSotr:
+    def __init__(self,):
+      chat_modes = ['dini10', 'jamaeshenasi11ensani', 'ravanshenasi11ensani',
+                        'joghrafi12ensani', 'dini10ensani', 'amadeghi', 'jamaeshenasi10ensani',
+                        'zamin11', 'dini11', 'mohitzist11', 'joghrafi10', 'joghrafi11', 'tarikh11',
+                        'tarikh12ensani', 'zist10', 'zist11', 'amadeghi9', 'dini12', 'tahlil12', 'tafakor7', 'salamat12',
+                        'olom7', 'khanevadeh12', 'hoviat12', 'hedieh9', 'hedieh8', 'hedieh7', 'ejtemaee9', 'ejtemaee8',
+                        'dini12ensani', 'dini12', 'ejtemaee7', 'zist12', 'economy10', 'falsafeh11'
+                         ]
+      self.vs = { chat_mode: connect_to_vs(chat_mode) for chat_mode in chat_modes}
+

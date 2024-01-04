@@ -991,6 +991,7 @@ def run_bot() -> None:
     application.run_polling()
 
 if __name__ == "__main__":
-    all_dbs_length = 100
-    langchain_utils.set_vectors(all_dbs_length)
+    # all_dbs_length = 100
+    vector_stor_dict = langchain_utils.VectorSotr().vs
+    langchain_utils.set_vectors(vector_stor_dict)
     run_bot()
