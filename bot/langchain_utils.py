@@ -19,7 +19,12 @@ from langchain.chains import create_extraction_chain
 from langchain.schema.runnable import RunnableParallel, RunnablePassthrough
 from langchain.callbacks import get_openai_callback
 # import configs
-from bot import all_dbs_length
+# from bot import all_dbs_length
+all_dbs_length = None  # Initialize vectors as None
+
+def set_vectors(v):
+    global all_dbs_length
+    all_dbs_length = v
 
 FACTOR = 1
 DOLLAR = 500000
