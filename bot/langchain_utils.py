@@ -19,6 +19,7 @@ from langchain.chains import create_extraction_chain
 from langchain.schema.runnable import RunnableParallel, RunnablePassthrough
 from langchain.callbacks import get_openai_callback
 # import configs
+from bot import all_dbs_length
 
 FACTOR = 1
 DOLLAR = 500000
@@ -46,6 +47,8 @@ def connect_to_vs(collection_name):
   embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
   db = FAISS.load_local(path_to_vector_store, embeddings)
   print("Created db!!!!!!", flush=True)
+  print("all_dbs_length",all_dbs_length, flush=True)
+
   # print("DB:", db.similarity_search("اعمال ما تقدم وما تاخر را توضیح دهید"), flush=True)
 
   return db
