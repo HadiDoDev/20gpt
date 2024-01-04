@@ -989,7 +989,8 @@ def run_bot() -> None:
 
     # start the bot
     application.run_polling()
+    all_dbs_length = 100
 
 if __name__ == "__main__":
-    all_dbs_length = 100
+    
     run_bot()
