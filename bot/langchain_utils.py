@@ -26,7 +26,7 @@ def set_vectors(v):
     global vector_stor_dict
     vector_stor_dict = v
 
-FACTOR = 1
+FACTOR = 5
 DOLLAR = 500000
 # def connect_to_vs(collection_name):
 #   url="https://4b3ee481-41e3-470d-a80e-45ffb13d9c7d.us-east4-0.gcp.cloud.qdrant.io:6333"
