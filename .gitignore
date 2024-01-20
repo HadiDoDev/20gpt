@@ -136,4 +136,7 @@ docker-compose.dev.yml
 
 mongodb/
 media/*
+vector_stors/*
+.idea/
 !media/.keep
+
