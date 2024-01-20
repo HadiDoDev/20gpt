@@ -48,7 +48,7 @@ DOLLAR = 500000
 #   return db
 
 def connect_to_vs(collection_name):
-  path_to_vector_store = f"./vector_stors/{collection_name}" 
+  path_to_vector_store = f"./vector_stores/{collection_name}"
   embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
   db = FAISS.load_local(path_to_vector_store, embeddings)
   print(f"Created {collection_name} db!!!!!!", flush=True)
@@ -67,7 +67,7 @@ class LANGCHAIN:
 
   @staticmethod
   def _generate_prompt_messages(message, prompt, dialog_messages, chat_mode):
-    # path_to_vector_store = f"./vector_stors/{chat_mode}_examples" 
+    # path_to_vector_store = f"./vector_stores/{chat_mode}_examples"
     # embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
     # vectorstore = FAISS.load_local(path_to_vector_store, embeddings)
 
