@@ -10,7 +10,7 @@ params = (
 )
 
 data = {
-    "token": "vlrP1qCYyiLXax4mbcSErct1AU6XsarX"
+    "token": "eboo_token"
 }
 
 def addfile(filelink):
