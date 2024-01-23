@@ -7,11 +7,7 @@
 - Message streaming (watch demo)
 - GPT-4 and GPT-4 Turbo support
 - Group Chat support (/help_group_chat to get instructions)
-- DALLE 2 (choose 👩‍🎨 Artist mode to generate images)
-- Voice message recognition
-- Code highlighting
-- 15 special chat modes: 👩🏼‍🎓 Assistant, 👩🏼‍💻 Code Assistant, 👩‍🎨 Artist, 🧠 Psychologist, 🚀 Elon Musk and other. You can easily create your own chat modes by editing `config/chat_modes.yml`
-- Support of [ChatGPT API](https://platform.openai.com/docs/guides/chat/introduction)
+- Text, Image and Voice message recognition
 - List of allowed Telegram users
 - Track $ balance spent on OpenAI API
 
