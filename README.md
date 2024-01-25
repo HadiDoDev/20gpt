@@ -12,7 +12,7 @@
 - Track $ balance spent on OpenAI API
 
 <p align="center">
-  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYmM2ZWVjY2M4NWQ3ZThkYmQ3MDhmMTEzZGUwOGFmOThlMDIzZGM4YiZjdD1n/unx907h7GSiLAugzVX/giphy.gif" />
+  <img src="http://15.204.49.154:8085/20gpt.gif" />
 </p>
 
 ---
